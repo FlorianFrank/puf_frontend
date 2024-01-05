@@ -1,66 +1,93 @@
-import React, { useEffect, useState } from 'react';
-import favicon from '../../assets/favicon.png';
+import React from 'react';
 
-export const DeviceStatus = (props) => (
-  <button
-    type="button"
-    style={{ background: props.state === 'ready' ? '#83f28f' : '#FB9678' }}
-    className="text-white py-1 px-2 capitalize rounded-2xl text-md"
-  >
-    {props.state}
-  </button>
-);
 
-export const AddTest = (props) => {
-  const startTest = () => {
-    console.log('Start test');
-  };
+const DeviceStatus = ({state}) => {
+    const getStatusColor = () => (state === 'online' ? '#83f28f' : '#FF0000');
 
-  return (
-    <button
-      type="button"
-      style={{ background: 'Blue' }}
-      className="text-white py-1 px-2 capitalize rounded-2xl text-md"
-      onClick={() => startTest()}
-    >
-      Add
-    </button>
-  );
+    return (
+        <button
+            type="button"
+            style={{background: getStatusColor()}}
+            className="statusButton text-white py-1 px-2 capitalize rounded-2xl text-md"
+        >
+            {state}
+        </button>
+    );
+};
+
+export const AddTest = () => {
+    const startTest = () => {
+        alert("Currently not supported")
+    };
+
+    return (
+        <button
+            type="button"
+            style={{background: 'Grey'}}
+            className="text-white py-1 px-2 capitalize rounded-1xl text-md"
+            onClick={() => startTest()}
+        >
+            Add
+        </button>
+    );
+};
+
+export const GetDeviceInfo = () => {
+
+    return (
+        <button
+            type="button"
+            style={{background: 'Grey'}}
+            className="text-white py-1 px-2 capitalize rounded-1xl text-md"
+            onClick={() => {
+                alert('Currently not supportd')
+            }}
+        >
+            Get Device Info
+        </button>
+    );
+};
+
+const deviceProtocolMap = {
+    tcp_ip: 'TCP/IP',
+    uart: 'UART',
+    spi: 'SPI',
+};
+
+const deviceTypeMap = {
+    nanosec_container: 'NanoSec Container',
+    oscilloscope: 'Oscilloscope',
+    smu: 'SMU',
 };
 
 const Device = (props) => {
-  const [stmState, setStmState] = useState({ state: 'busy' });
-  useEffect(() => {
-    getStmState();
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+    const {id, name, type, protocol, port, status} = props;
 
-  async function getStmState() {
-    const res = await fetch(`http://127.0.0.1:8088/getStmState/`);
-    const json = await res.json();
-    console.log('getStmState');
-    console.log(json);
-    setStmState(json);
-    //console.log(stmState);
-    //setTimeout(function(){[].push(2)}, 1000)
-  }
+    const deviceProtocolJsonToStr = (protocol) => deviceProtocolMap[protocol] || protocol;
+    const deviceTypeJsonToStr = (devType) => deviceTypeMap[devType] || devType;
 
-  console.log(props);
-  return (
-    <>
-      <tr className="templateRow">
-        <td className="text-center">{props.id}</td>
+    const startTest = () => {
+        console.log('Start test');
+    };
 
-        <td className="text-center">{props.name}</td>
-        <td className="text-center">{props.ExternalMemory}</td>
-        <td className="text-center">
-          <DeviceStatus state="ready" statusbg="#83f28f" />
-        </td>
-        <td className="text-center">
-          <AddTest />
-        </td>
-      </tr>
-    </>
-  );
+    return (
+        <tr className="templateRow">
+            <td className="text-center">{id}</td>
+            <td className="text-center">{name}</td>
+            <td className="text-center">{deviceTypeJsonToStr(type)}</td>
+            <td className="text-center">{deviceProtocolJsonToStr(protocol)}</td>
+            <td className="text-center">{port}</td>
+            <td className="text-center">
+                <DeviceStatus state={status}/>
+            </td>
+            <td className="text-center">
+                <AddTest startTest={startTest}/>
+            </td>
+            <td className="text-center">
+                <GetDeviceInfo />
+            </td>
+        </tr>
+    );
 };
 
 export default Device;
