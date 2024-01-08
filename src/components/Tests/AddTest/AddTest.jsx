@@ -170,17 +170,16 @@ class AddTest extends Component {
                 onChange={this.handleChangeChecked(checkedValueName)}
             />
             <label
-                for="bordered-checkbox-1"
-                class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
                 {title}
             </label>
         </div>
     }
 
-    returnRenderObject(renderObj) {
+    returnRenderObject(renderObj, testType) {
         return <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
-            <Header category="Tests" title="Add Carbon Nanotube Test"/>
+            <Header category="Tests" title={"Add " + testType + " Test"}/>
             <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-1 flex-col gap-3 lg:pl-3 mt-2 w-full">
                     {renderObj}

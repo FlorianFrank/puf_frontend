@@ -12,9 +12,6 @@ class AddCNTTest extends AddTest {
         super(props);
     }
 
-
-
-
     componentDidMount() {
         this.fetch_test_types('cnt_fet')
     }
@@ -96,6 +93,7 @@ class AddCNTTest extends AddTest {
 
                 <div className="grid md:grid-cols-2 md:gap-6 mt-8">
                     {this.defineCheckbox(this.state.values.multipleIterationsChecked, 'multipleIterationsChecked', 'Specify Number of iterations')}
+                    {this.defineCheckbox(this.state.values.useSwitchMatrix, 'useSwitchMatrix', 'Use Switch Matrix')}
                 </div>
                 {
                     this.state.values.multipleIterationsChecked && (
@@ -124,7 +122,7 @@ class AddCNTTest extends AddTest {
                 >
                     Save
                 </button>
-            </form>
+            </form>, 'Carbon Nanotube'
         )
     }
 }
