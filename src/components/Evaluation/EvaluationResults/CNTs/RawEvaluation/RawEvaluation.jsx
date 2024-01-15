@@ -39,10 +39,13 @@ const RawEvaluation = () => {
     const [evaluationData, setEvaluationData] = useState([])
     const [loading, setLoading] = useState(true)
 
-    const [expanded, setExpanded] = useState(true);
-    const [expandEvaluationTable, setExpandEvaluationTable] = useState(true);
-
+    const [expandedStates, setExpandedStates] = useState({
+        expanded: true,
+        expandEvaluationTable: true
+    });
+    const {expanded, expandEvaluationTable} = expandedStates;
     const [connectedMeasurements, setConnectedMeasurements] = useState([]);
+
 
     let requestVisualization = async () => {
         await fetch_get(FETCH_VISUALIZATION_RESULT + identifier, (value) => {
@@ -119,14 +122,19 @@ const RawEvaluation = () => {
                         Selected Test results
                     </Typography>
                     <MeasurementTemplate connectedMeasurements={connectedMeasurements}
-                                         setExpanded={(value) => setExpanded(value)} expanded={expanded}/>
+                                         setExpanded={(value) => setExpandedStates({
+                                             ...expandedStates,
+                                             expanded: value
+                                         })} expanded={expanded}/>
                 </CardContent>
                 <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
                         Evaluation Results
                     </Typography>
-                    <RawEvaluationTable evaluationData={evaluationData}
-                                        setExpanded={(value) => setExpandEvaluationTable(value)} expanded={expandEvaluationTable}/>
+                    <RawEvaluationTable evaluationData={evaluationData} setExpanded={(value) => setExpandedStates({
+                        ...expandedStates,
+                        expandEvaluationTable: value
+                    })} expanded={expandEvaluationTable}/>
                 </CardContent>
                 <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
