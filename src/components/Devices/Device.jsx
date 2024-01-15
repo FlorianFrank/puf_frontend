@@ -1,52 +1,43 @@
 import React from 'react';
 
 
+const COLORS = {
+    online: '#83f28f',
+    offline: '#FF0000',
+    grey: 'Grey',
+};
+
 const DeviceStatus = ({state}) => {
-    const getStatusColor = () => (state === 'online' ? '#83f28f' : '#FF0000');
+    const getStatusColor = () => COLORS[state] || COLORS.offline;
 
     return (
-        <button
-            type="button"
+        <Button
             style={{background: getStatusColor()}}
             className="statusButton text-white py-1 px-2 capitalize rounded-2xl text-md"
         >
             {state}
-        </button>
+        </Button>
     );
 };
 
-export const AddTest = () => {
-    const startTest = () => {
-        alert("Currently not supported")
-    };
+const Button = ({style, className, onClick, children}) => (
+    <button type="button" style={{...style}} className={className} onClick={onClick}>
+        {children}
+    </button>
+);
 
-    return (
-        <button
-            type="button"
-            style={{background: 'Grey'}}
-            className="text-white py-1 px-2 capitalize rounded-1xl text-md"
-            onClick={() => startTest()}
-        >
-            Add
-        </button>
-    );
-};
+export const AddTest = ({ startTest }) => (
+    <Button style={{ background: COLORS.grey }} className="text-white py-1 px-2 capitalize rounded-1xl text-md" onClick={startTest}>
+        Add
+    </Button>
+);
 
-export const GetDeviceInfo = () => {
-
-    return (
-        <button
-            type="button"
-            style={{background: 'Grey'}}
-            className="text-white py-1 px-2 capitalize rounded-1xl text-md"
-            onClick={() => {
-                alert('Currently not supportd')
-            }}
-        >
-            Get Device Info
-        </button>
-    );
-};
+export const GetDeviceInfo = () => (
+    <Button style={{background: COLORS.grey}} className="text-white py-1 px-2 capitalize rounded-1xl text-md"
+            onClick={() => alert('Currently not supported')}>
+        Get Device Info
+    </Button>
+);
 
 const deviceProtocolMap = {
     tcp_ip: 'TCP/IP',
@@ -60,14 +51,12 @@ const deviceTypeMap = {
     smu: 'SMU',
 };
 
-const Device = (props) => {
-    const {id, name, type, protocol, port, status} = props;
-
+const Device = ({id, name, type, protocol, port, status}) => {
     const deviceProtocolJsonToStr = (protocol) => deviceProtocolMap[protocol] || protocol;
     const deviceTypeJsonToStr = (devType) => deviceTypeMap[devType] || devType;
 
     const startTest = () => {
-        console.log('Start test');
+        alert('Currently not supported');
     };
 
     return (
@@ -84,7 +73,7 @@ const Device = (props) => {
                 <AddTest startTest={startTest}/>
             </td>
             <td className="text-center">
-                <GetDeviceInfo />
+                <GetDeviceInfo/>
             </td>
         </tr>
     );
