@@ -43,7 +43,7 @@ const Devices = () => {
             })
         };
 
-    useEffect(() => {
+    useEffect( () => {
         fetchDevices().catch((error) => {
             console.log('fetchDevices caused an exception', error)
         })
