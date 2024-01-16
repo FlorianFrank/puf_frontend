@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {useNavigate} from 'react-router-dom';
 import {Chip, Collapse} from '@mui/material';
@@ -23,9 +23,9 @@ import {styled} from "@mui/material/styles";
 
 
 import {triggerStartTestToast} from "../../Utils/ToastManager";
-import {fetch_delete, fetch_get, fetch_post} from "../../Utils/AuthenticationUtils";
+import {fetch_delete, fetch_post} from "../../Utils/AuthenticationUtils";
 import {useStateContext} from "../../../contexts/ContextProvider";
-import {FETCH_DELETE_CNT_TEST, FETCH_WAFER_CONFIG} from "../../../config";
+import {FETCH_DELETE_CNT_TEST} from "../../../config";
 
 
 const INVALID_SELECTION = -1;
@@ -60,35 +60,7 @@ function Row({row}) {
         column: INVALID_SELECTION,
     });
 
-    const [waferConfig, setWaferConfig] = useState({
-        waferIDs: [],
-        pufIDs: [],
-        rows: [],
-        columns: [],
-        rowsOnPUF: [],
-        columnsOnPUF: [],
-    });
-
-    const fetchWaferConfigs = async () => {
-        fetch_get(FETCH_WAFER_CONFIG, (value) => {
-            setAlertIsSet(value)
-        }, (value) => {
-            setAlertMessage(value)
-        }, row).then((data) => {
-            if (data) {
-                console.log("CONFIGS ", data.configs)
-                setWaferConfig(data.configs)
-            }
-        })
-    }
-
-    useEffect(() => {
-            fetchWaferConfigs().catch((errorMsg) => {
-                console.log('Error while calling fetchWaferConfigs ', errorMsg)
-            })
-        }
-        , [])
-
+    const {waferConfig} = useStateContext();
 
     const deleteTest = (row) => {
         fetch_delete(FETCH_DELETE_CNT_TEST + row.id, (value) => {
@@ -147,11 +119,58 @@ function Row({row}) {
         return Object.values(newErrors).every((x) => x === '');
     };
 
-    const renderOptions = (list) => {
-        console.log("ReNDERPOTPONSF", list)
-        if (list.length === 0)
-            return <React.Fragment/>
-        return list.map((option) => (
+    const renderOptions = (property) => {
+        const matchCondition = (v) => {
+            return (
+                (values.waferID === SELECT_ALL || Number(v['waferID']) === Number(values.waferID)) &&
+                (values.pufID === SELECT_ALL || Number(v['pufID']) === Number(values.pufID)) &&
+                (values.row === SELECT_ALL || Number(v['row']) === Number(values.row)) &&
+                (values.column === SELECT_ALL || Number(v['column']) === Number(values.column))
+            );
+        };
+
+        const getPropertyList = (propertyKey) => {
+            let propertyList = [];
+            waferConfig.forEach((v) => {
+                if (matchCondition(v) && !propertyList.includes(v[propertyKey])) {
+                    propertyList.push(v[propertyKey]);
+                }
+            });
+            if ((propertyKey === 'columnsOnPUF' || propertyKey === 'rowsOnPUF') && propertyList.length > 0)
+                return propertyList[0] // TODO ned ganz sauber
+            return propertyList;
+        };
+
+        let list_properties = [];
+
+        switch (property) {
+            case 'columnsOnPUF':
+                list_properties = ['all'].concat(getPropertyList('columnsOnPUF'));
+                break;
+            case 'rowsOnPUF':
+                list_properties = ['all'].concat(getPropertyList('rowsOnPUF'));
+                break;
+            case 'waferIDs':
+                list_properties = getPropertyList('waferID');
+                break;
+            case 'pufIDs':
+                list_properties = getPropertyList('pufID');
+                break;
+            case 'rows':
+                list_properties = getPropertyList('row');
+                break;
+            case 'columns':
+                list_properties = getPropertyList('column');
+                break;
+            default:
+                break;
+        }
+
+        if (list_properties.length === 0) {
+            return <React.Fragment/>;
+        }
+
+        return list_properties.map((option) => (
             <option key={option} value={option}>
                 {option}
             </option>
@@ -159,24 +178,8 @@ function Row({row}) {
     };
 
     const handleChange = (name) => (event) => {
-        console.log(
-            '🚀 ~ file: AddMemoryTest.jsx:83 ~ handleChange ~ event:',
-            name,
-            event.target.value
-        );
         validate();
-
-        if (name === 'dataSetupTime') {
-            let dst = event.target.value;
-
-            const regex = /^\d+[,-]\d+([,-]\d*)*$/;
-            console.log(dst);
-            console.log(regex.test(dst));
-
-            setValues({...values, [name]: dst});
-        } else {
-            setValues({...values, [name]: event.target.value});
-        }
+        setValues({...values, [name]: event.target.value});
     };
 
     const handleOptionChange = (event) => {
@@ -294,7 +297,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(waferConfig.waferIDs)}
+                                            {renderOptions('waferIDs')}
                                         </select>
                                     </div>
 
@@ -313,7 +316,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(waferConfig.rows)}
+                                            {renderOptions('rows')}
                                         </select>
                                     </div>
 
@@ -332,7 +335,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(waferConfig.columns)}
+                                            {renderOptions('columns')}
                                         </select>
                                     </div>
 
@@ -351,7 +354,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(waferConfig.pufIDs)}
+                                            {renderOptions('pufIDs')}
                                         </select>
                                     </div>
 
@@ -375,7 +378,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(['all'].concat(waferConfig.rowsOnPUF))}
+                                            {renderOptions('rowsOnPUF')}
                                         </select>
                                     </div>
 
@@ -394,7 +397,7 @@ function Row({row}) {
                                             ) : (
                                                 ''
                                             )}</option>
-                                            {renderOptions(['all'].concat(waferConfig.columnsOnPUF))}
+                                            {renderOptions('columnsOnPUF')}
                                         </select>
                                     </div>
                                 </div>
