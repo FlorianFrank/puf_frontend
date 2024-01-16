@@ -23,6 +23,7 @@ import Switch from '@mui/material/Switch';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import NextPlanIcon from '@mui/icons-material/NextPlan';
+import {BACKEND_IP_ADDRESS} from "../../config";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -214,6 +215,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function Evaluation() {
+  const [alertState, setAlertState] = useState(null);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -223,18 +225,6 @@ export default function Evaluation() {
 
   const [rows, setRows] = useState([]);
 
-  useEffect(() => {
-    requestTests();
-  }, []);
-
-  let requestTests = async () => {
-    fetch('http://127.0.0.1:8000/api/getEvaluationsTest/')
-      .then((response) => response.json())
-      .then((data) => {
-        setRows(data);
-        console.log(data);
-      });
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
