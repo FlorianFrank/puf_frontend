@@ -10,10 +10,9 @@ import {MdKeyboardArrowDown} from 'react-icons/md';
 import {TooltipComponent} from '@syncfusion/ej2-react-popups';
 
 //Context
-import {useStateContext} from '../contexts/ContextProvider';
-import MenuDropdown from "./Menu/MenuDropdown";
-import NotificationDropdown from "./Menu/NotificationDropdown";
-import {tr} from "date-fns/locale";
+import {useStateContext} from '../../contexts/ContextProvider';
+import MenuDropdown from "../Menu/MenuDropdown";
+import NotificationDropdown from "../Menu/NotificationDropdown";
 
 const NavButton = ({title, customFunc, icon, color, dotColor}) => (
     <TooltipComponent content={title} position="BottomCenter">
@@ -98,8 +97,8 @@ const Navbar = () => {
                         </p>
                         <MdKeyboardArrowDown className="text-gray-400 text-14"/>
                     </div>
-                    {(userMenuVisible) ? <MenuDropdown></MenuDropdown> : ''}
-                    {(notificationMenuVisible) ? <NotificationDropdown></NotificationDropdown> : ''}
+                    {(userMenuVisible) && <MenuDropdown/>}
+                    {(notificationMenuVisible) && <NotificationDropdown/>}
                 </TooltipComponent>
             </div>
         </div>
