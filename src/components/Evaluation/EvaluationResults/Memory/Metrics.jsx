@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 import Uniformity from './Uniformity';
 import Robustness from './Robustness';
 import Uniqueness from './Uniqueness';
-import { Header } from '../index';
+import {Header} from "../../../index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

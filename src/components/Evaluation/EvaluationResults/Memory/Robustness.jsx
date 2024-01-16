@@ -24,8 +24,8 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import { Checkbox, Button } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
-import { BACKEND_BASE_URL } from '../../config';
 import { v5 as uuidv5 } from 'uuid';
+import {BACKEND_BASE_URL} from "../../../../config";
 const NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341'; // Example namespace UUID
 
 function ccyFormat(num) {

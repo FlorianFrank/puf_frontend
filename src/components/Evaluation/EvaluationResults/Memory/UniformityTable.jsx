@@ -30,8 +30,8 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import { Checkbox, Button } from '@mui/material';
 
 import Heatmap from './Heatmap';
-import { useStateContext } from '../../contexts/ContextProvider';
-import { BACKEND_BASE_URL } from '../../config';
+import {BACKEND_BASE_URL} from "../../../../config";
+import {useStateContext} from "../../../../contexts/ContextProvider";
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }

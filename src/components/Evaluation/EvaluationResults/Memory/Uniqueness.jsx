@@ -6,8 +6,8 @@ import SwipeableViews from 'react-swipeable-views';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import {InterHammeingDistancetable} from "../../../index";
 //
-import { InterHammeingDistancetable } from '../index';
 
 export default function Uniqueness(props) {
   const { data } = props;

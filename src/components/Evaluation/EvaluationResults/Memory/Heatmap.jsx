@@ -6,8 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import Grid from '@mui/material/Grid';
-
-import { BACKEND_BASE_URL } from '../../config';
+import {BACKEND_BASE_URL} from "../../../../config";
 
 export default function Heatmap({
   group,
