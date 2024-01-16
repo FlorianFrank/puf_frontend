@@ -15,7 +15,7 @@ import Stack from '@mui/material/Stack';
 import {styled} from '@mui/material/styles';
 
 const AddTestTypeLayout = ({color, elements, type}) => {
-    const [collapsibleOpen, setCollapsibleOpen] = useState(false);
+    const [collapsibleOpen, setCollapsibleOpen] = useState(true);
 
     const StyledTable = styled(Table)(() => ({
         '&:last-child td, &:last-child th': {

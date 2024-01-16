@@ -13,7 +13,12 @@ class AddCNTTest extends AddTest {
     }
 
     componentDidMount() {
-        this.fetch_test_types('cnt_fet')
+        this.fetch_test_types('cnt_fet').then((result) => {
+            console.log(`fetch_test_types returned ${result}`)
+        })
+            .catch((error) => {
+                console.error(`fetch_test_types returned ${error}`)
+            });
     }
 
 
@@ -37,7 +42,9 @@ class AddCNTTest extends AddTest {
     render() {
         return this.returnRenderObject(
             <form onSubmit={(event) => {
-                this.handleSubmit('cnt_puf', event)
+                this.handleSubmit('cnt_puf', event).catch((errorMsg) => {
+                    console.log('Error while calling handleSubmit: ', errorMsg)
+                })
             }}>
                 <div className="relative z-0 w-full mb-6 group">
                     <input
@@ -92,12 +99,12 @@ class AddCNTTest extends AddTest {
                 </div>
 
                 <div className="grid md:grid-cols-2 md:gap-6 mt-8">
-                    {this.defineCheckbox(this.state.values.multipleIterationsChecked, 'multipleIterationsChecked', 'Specify Number of iterations')}
-                    {this.defineCheckbox(this.state.values.useSwitchMatrix, 'useSwitchMatrix', 'Use Switch Matrix')}
+                    {this.defineCheckbox(this.state.values['multipleIterationsChecked'], 'multipleIterationsChecked', 'Specify Number of iterations')}
+                    {this.defineCheckbox(this.state.values['useSwitchMatrix'], 'useSwitchMatrix', 'Use Switch Matrix')}
                 </div>
                 {
-                    this.state.values.multipleIterationsChecked && (
-                        this.defineInputField('Iterations', this.state.values.nrIterations, 'iterations', 'number')
+                    this.state.values['multipleIterationsChecked'] && (
+                        this.defineInputField('Iterations', this.state.values['nrIterations'], 'iterations', 'number')
                     )
                 }
 
@@ -114,7 +121,7 @@ class AddCNTTest extends AddTest {
                     {this.defineCheckbox(this.state.values.hysteresis, 'hysteresis', 'With hysteresis.')}
                 </div>
                 <div className="grid md:grid-cols-2 md:gap-6 mt-8">
-                    {this.defineCheckbox(this.state.values.pulsed, 'pulsed', 'Pulsed mesurement.')}
+                    {this.defineCheckbox(this.state.values['pulsed'], 'pulsed', 'Pulsed measurement.')}
                 </div>
                 <button
                     type="submit"
