@@ -18,7 +18,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { BACKEND_BASE_URL } from '../../config';
+import {BACKEND_BASE_URL} from "../../../../config";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;

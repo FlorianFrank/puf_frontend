@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 
 import Grid from '@mui/material/Grid';
 
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config';
 
 export default function Heatmap({
   group,
@@ -24,7 +24,7 @@ export default function Heatmap({
     const fetchExistingHeatmapIds = async () => {
       try {
         const response = await fetch(
-          `${BASE_URL}/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
+          `${BACKEND_BASE_URL}/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
             measurement_ids
           )}`
         );
@@ -56,7 +56,7 @@ export default function Heatmap({
               <Card variant="outlined" style={{ marginBottom: '20px' }}>
                 <CardContent>
                   <Typography variant="h6">
-                    Measurment ID: {heatmap.measurement_ids}
+                    Measurement ID: {heatmap.measurement_ids}
                   </Typography>
                   <img
                     src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}

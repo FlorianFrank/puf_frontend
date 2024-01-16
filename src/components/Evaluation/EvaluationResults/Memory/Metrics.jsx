@@ -50,8 +50,8 @@ function a11yProps(index) {
 
 export default function Metrics() {
   let location = useLocation();
-  const evaluationData = location.state?.evaluationData || {};
-  const evaluationResult = JSON.parse(location.state?.evaluationResult || {});
+  const evaluationData = {} // location.state?.evaluationData || {};
+  const evaluationResult = {} // JSON.parse(location.state?.evaluationResult || {});
 
   const uniformityData = evaluationResult?.uniformity || [];
   console.log(
@@ -124,7 +124,7 @@ export default function Metrics() {
 
   return (
     <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
-      <Header category="Dashboard" title="Results / Metrics" />
+      <Header category="Evaluation" title="Results / Metrics" />
       <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
         <Divider />
         <AppBar position="static">

@@ -31,7 +31,7 @@ import { Checkbox, Button } from '@mui/material';
 
 import Heatmap from './Heatmap';
 import { useStateContext } from '../../contexts/ContextProvider';
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config';
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }
@@ -90,7 +90,7 @@ function GroupRow({ group, evaluation_id, setExistingHeatmapIds }) {
     const fetchExistingHeatmapIds = async () => {
       try {
         const response = await fetch(
-          `${BASE_URL}/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
+          `${BACKEND_BASE_URL}/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
             measurement_ids
           )}`
         );
@@ -116,7 +116,7 @@ function GroupRow({ group, evaluation_id, setExistingHeatmapIds }) {
             <Card variant="outlined" style={{ marginBottom: '20px' }}>
               <CardContent>
                 <Typography variant="h6">
-                  Measurment ID: {heatmap.measurement_ids}
+                  Measurement ID: {heatmap.measurement_ids}
                 </Typography>
                 <img
                   src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
@@ -158,7 +158,7 @@ export default function UniformityTable(props) {
   useEffect(() => {
     async function fetchDisabledIds(measId) {
       const response = await fetch(
-        `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+        `${BACKEND_BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
       );
       const data = await response.json();
       if (data.exists) {
@@ -330,13 +330,16 @@ export default function UniformityTable(props) {
     console.log('groupedFilteredData');
     console.log(groupedFilteredData);
     //generate-heatmaps/
-    const response = await fetch(`${BASE_URL}/brokerApi/generate-heatmaps/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/brokerApi/generate-heatmaps/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
     const data = await response.json();
 
     console.log(data);
@@ -348,7 +351,7 @@ export default function UniformityTable(props) {
     console.log(selectedIds);
     for (let measId of selectedIds) {
       const response = await fetch(
-        `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+        `${BACKEND_BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
       );
       const data = await response.json();
       if (data.exists) {

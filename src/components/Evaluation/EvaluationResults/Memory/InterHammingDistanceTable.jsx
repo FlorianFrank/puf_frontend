@@ -49,8 +49,8 @@ const InterHammingDistanceTable = (props) => {
             {group.inter_hamming_distances.length === 0 ? (
               <p>error</p>
             ) : (
-              group.inter_hamming_distances.map((row, index) => (
-                <TableRow key={`${row.chip1}-${row.chip2}-${index}`}>
+              group.inter_hamming_distances.map((row) => (
+                <TableRow key={`${row.chip1}-${row.chip2}`}>
                   <TableCell>{row.chip1}</TableCell>
                   <TableCell align="right">{row.chip2}</TableCell>
                   <TableCell align="right">{row.iterationChip1}</TableCell>
@@ -92,13 +92,7 @@ const InterHammingDistanceTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {group.inter_hamming_distances.length === 0 ? (
-        <p>error</p>
-      ) : (
-        <UniquenessHistogram group={group}/> 
-      )}
-      
+      {/* <UniquenessHistogram group={group}/>  */}
     </>
   );
 };

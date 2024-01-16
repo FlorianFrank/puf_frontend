@@ -24,7 +24,7 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import { Checkbox, Button } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config';
 import { v5 as uuidv5 } from 'uuid';
 const NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341'; // Example namespace UUID
 
@@ -77,7 +77,7 @@ const Robustness = (props) => {
 
   async function fetchDisabledIds(measGroupKey) {
     const response = await fetch(
-      `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measGroupKey}`
+      `${BACKEND_BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measGroupKey}`
     );
     const data = await response.json();
     if (data.exists) {
@@ -88,7 +88,6 @@ const Robustness = (props) => {
 
   useEffect(() => {
     // Extracting all measurement ids from the provided object
-    //TODO : FIX map (array is empty)
     data.flatMap((group) =>
       group.memories.flatMap((memoryGroup) =>
         memoryGroup.initialValueKey.flatMap((initialValueGroup) =>
@@ -96,17 +95,12 @@ const Robustness = (props) => {
             addressesGroup.chipInstances.flatMap((chipGroup) =>
               chipGroup.challenges.flatMap((challengeGroup) =>
                 challengeGroup.challenge_measuremenst.filter((meas) => {
-                  console.log("meas", meas)
-                  if (meas.robustness !== false && meas.id_filename_list) {
-                    console.log("meas", meas)
-                    const concatenatedIds = meas.id_filename_list
-                      .map((item) => item.id)
-                      .join('');
-                    const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
-                    console.log(groupKeyForMeas);
-                    fetchDisabledIds(groupKeyForMeas);
-                  }
-                  console.log("good")
+                  const concatenatedIds = meas.id_filename_list
+                    .map((item) => item.id)
+                    .join('');
+                  const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
+                  console.log(groupKeyForMeas);
+                  fetchDisabledIds(groupKeyForMeas);
                 })
               )
             )
@@ -126,23 +120,21 @@ const Robustness = (props) => {
             addressesGroup.chipInstances.flatMap((chipGroup) =>
               chipGroup.challenges.flatMap((challengeGroup) =>
                 challengeGroup.challenge_measuremenst.filter((meas) => {
-                  if (meas.robustness !== false && meas.id_filename_list) {
-                    const concatenatedIds = meas.id_filename_list
-                      .map((item) => item.id)
-                      .join('');
-                    const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
-                    console.log(groupKeyForMeas);
-                    if (selected.includes(groupKeyForMeas)) {
-                      selectedRows.push({
-                        [groupKeyForMeas]: {
-                          id_filename_list: meas.id_filename_list,
-                          initialValue: initialValueGroup.initialValue,
-                          startAddress: addressesGroup.startAddress,
-                          stopAddress: addressesGroup.stopAddress,
-                          evaluationId: evaluation_id
-                        }
-                      });
-                    }
+                  const concatenatedIds = meas.id_filename_list
+                    .map((item) => item.id)
+                    .join('');
+                  const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
+                  console.log(groupKeyForMeas);
+                  if (selected.includes(groupKeyForMeas)) {
+                    selectedRows.push({
+                      [groupKeyForMeas]: {
+                        id_filename_list: meas.id_filename_list,
+                        initialValue: initialValueGroup.initialValue,
+                        startAddress: addressesGroup.startAddress,
+                        stopAddress: addressesGroup.stopAddress,
+                        evaluationId: evaluation_id
+                      }
+                    });
                   }
 
                   //selected.includes(groupKeyForMeas) ? { [groupKeyForMeas]: meas.id_filename_list } : null;
@@ -158,7 +150,7 @@ const Robustness = (props) => {
     // Send the selectedRows to the backend
     try {
       const response = await fetch(
-        `${BASE_URL}/brokerApi/generate-rebustness-heatmaps/`,
+        `${BACKEND_BASE_URL}/brokerApi/generate-rebustness-heatmaps/`,
         {
           method: 'POST',
           headers: {
@@ -223,7 +215,7 @@ const Robustness = (props) => {
       // Generate a unique UUID based on the concatenated string
       const groupKey = uuidv5(concatenatedIds, NAMESPACE);
       const response = await fetch(
-        `${BASE_URL}/brokerApi/robustness-heatmap/?evaluation_id=${evaluation_id}&measurement_key=${groupKey}`
+        `${BACKEND_BASE_URL}/brokerApi/robustness-heatmap/?evaluation_id=${evaluation_id}&measurement_key=${groupKey}`
       );
       const data = await response.json();
       console.log('data from existing heatmaps:::');
