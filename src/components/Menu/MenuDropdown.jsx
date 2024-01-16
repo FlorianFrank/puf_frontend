@@ -42,7 +42,10 @@ export default function MenuDropdown() {
                     <ListItemIcon>
                         <GrCircleInformation fontSize="small"/>
                     </ListItemIcon>
-                    <ListItemText onClick={() => setUserMenuVisible(false)}>Get Version Info</ListItemText>
+                    <ListItemText onClick={() => {
+                        setUserMenuVisible(false);
+                        navigate('/versionInfo');
+                    }}>Get Version Info</ListItemText>
                     <Typography variant="body2" color="text.secondary">
                         ⌘I
                     </Typography>
