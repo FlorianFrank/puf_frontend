@@ -17,7 +17,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const SelectedTestsEvaluation = (props) => {
+const MeasurementFilter = ({evalType}) => {
   const [groupedMeasurements, setGroupedMeasurements] = useState({});
 
   const [measurements, setMeasurements] = useState(
@@ -88,6 +88,102 @@ const SelectedTestsEvaluation = (props) => {
     return { color: 'black', backgroundColor: 'gray' };
   };
 
+
+  const table_memories = (groupMeasurements) => {
+    return <Table size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell>ID</TableCell>
+          <TableCell>DST</TableCell>
+
+          <TableCell>Iteration</TableCell>
+          <TableCell>Voltage</TableCell>
+          <TableCell>Temperature</TableCell>
+          <TableCell> Remove </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {groupMeasurements &&
+            groupMeasurements.map((measurment, row) => (
+                <>
+                  <TableRow>
+                    <TableCell>{measurment.id}</TableCell>
+                    <TableCell>{measurment.dataSetupTime}</TableCell>
+                    <TableCell>{measurment.iteration}</TableCell>
+                    <TableCell>{measurment.voltage}</TableCell>
+                    <TableCell>{measurment.temperature}</TableCell>
+                    <TableCell>
+                      <IconButton
+                          onClick={() => deleteObject(measurment.id)}
+                          color="error"
+                          aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                </>
+            ))}
+      </TableBody>
+    </Table>
+  }
+
+  const table_cnt_pufs = (groupMeasurements) => {
+    return <Table size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell>ID</TableCell>
+          <TableCell>Test Type</TableCell>
+          <TableCell>Test Name</TableCell>
+          <TableCell>Wafer</TableCell>
+          <TableCell>Row</TableCell>
+          <TableCell>Column</TableCell>
+          <TableCell>PUF ID</TableCell>
+          <TableCell>Row on PUF</TableCell>
+          <TableCell>Column on PUF</TableCell>
+          <TableCell>Temperature</TableCell>
+          <TableCell>Iterations</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {groupMeasurements &&
+            groupMeasurements.map((measurment, row) => (
+                <>
+                  <TableRow>
+                    <TableCell>{measurment.id}</TableCell>
+                    <TableCell>{measurment.testType}</TableCell>
+                    <TableCell>{measurment.testName}</TableCell>
+                    <TableCell>{measurment.wafer}</TableCell>
+                    <TableCell>{measurment.rowOnWafer}</TableCell>
+                    <TableCell>{measurment.columnOnWafer}</TableCell>
+                    <TableCell>{measurment.pufID}</TableCell>
+                    <TableCell>{measurment.rowOnPUF}</TableCell>
+                    <TableCell>{measurment.columnOnPUF}</TableCell>
+                    <TableCell>{measurment.temperature}</TableCell>
+                    <TableCell>{measurment.iteration}</TableCell>
+                    <TableCell>
+                      <IconButton
+                          onClick={() => deleteObject(measurment.id)}
+                          color="error"
+                          aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                </>
+            ))}
+      </TableBody>
+    </Table>
+  }
+
+  const select_table = (evalType, groupMeasurements) => {
+    if (evalType === 'cnt_puf')
+      return table_cnt_pufs(groupMeasurements)
+    else if (evalType === 'memory')
+      return table_memories(groupMeasurements)
+  }
+
   return (
     <Grid item xs={12} md={6}>
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
@@ -114,42 +210,7 @@ const SelectedTestsEvaluation = (props) => {
                   component={Paper}
                   style={{ marginTop: 10, marginBottom: 50 }}
                 >
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>DST</TableCell>
-
-                        <TableCell>Iteration</TableCell>
-                        <TableCell>Voltage</TableCell>
-                        <TableCell>Temperature</TableCell>
-                        <TableCell> Remove </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {groupMeasurements &&
-                        groupMeasurements.map((measurment, row) => (
-                          <>
-                            <TableRow>
-                              <TableCell>{measurment.id}</TableCell>
-                              <TableCell>{measurment.dataSetupTime}</TableCell>
-                              <TableCell>{measurment.iteration}</TableCell>
-                              <TableCell>{measurment.voltage}</TableCell>
-                              <TableCell>{measurment.temperature}</TableCell>
-                              <TableCell>
-                                <IconButton
-                                  onClick={() => deleteObject(measurment.id)}
-                                  color="error"
-                                  aria-label="delete"
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        ))}
-                    </TableBody>
-                  </Table>
+                  {select_table(evalType, groupMeasurements)}
                 </TableContainer>
               </>
             );
@@ -160,4 +221,4 @@ const SelectedTestsEvaluation = (props) => {
   );
 };
 
-export default SelectedTestsEvaluation;
+export default MeasurementFilter;

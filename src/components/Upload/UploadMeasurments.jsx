@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Input from '@mui/material/Input';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config'
 
 const UploadMeasurments = () => {
   const [files, setFiles] = useState([]);
@@ -17,7 +17,7 @@ const UploadMeasurments = () => {
     files.forEach((file) => {
       formData.append('uploaded_csv_files', file);
     });
-    fetch(`${BASE_URL}/uploadMeasurmentsApi/uploadMeas/`, {
+    fetch(`${BACKEND_BASE_URL}/uploadMeasurmentsApi/uploadMeas/`, {
       method: 'POST',
       body: formData,
       headers: { 'X-CSRFToken': '{{ csrf_token }}' } // replace with actual CSRF token value

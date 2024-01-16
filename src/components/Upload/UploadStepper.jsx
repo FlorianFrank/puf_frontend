@@ -31,7 +31,7 @@ import Typography from '@mui/material/Typography';
 
 import { CustomTable } from '../../components';
 
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -252,11 +252,15 @@ const UploadStepper = () => {
 
         try {
           axios
-            .post(`${BASE_URL}/uploadMeasurmentsApi/uploadMeas/`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
+            .post(
+              `${BACKEND_BASE_URL}/uploadMeasurmentsApi/uploadMeas/`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
               }
-            })
+            )
             .then((response) => {
               console.log(response);
               console.log('File Uploaded Successfully');

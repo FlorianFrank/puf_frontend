@@ -24,7 +24,7 @@ import {
   memoryBrands,
   MRAMModels,
   FRAMModels
-} from '../../data/dummy';
+} from '../../data/navbar_config';
 
 import { styled } from '@mui/material/styles';
 
@@ -80,14 +80,14 @@ function Row({ row, onRowChange }) {
 
   /*  const handleMemoryLabelChange = (name) => (event) => {
     console.log(
-      '🚀 ~ file: AddTest.jsx:83 ~ memoryLabel ~ event:',
+      '🚀 ~ file: AddMemoryTest.jsx:83 ~ memoryLabel ~ event:',
       name,
       event.target.value
     );
     let value = event.target.value.replace(/\s/g, '').toUpperCase();
     setValues({ ...values, [name]: value });
     validate();
-    console.log('🚀 ~ file: AddTest.jsx:83 ~ memoryLabel ~ event:', value);
+    console.log('🚀 ~ file: AddMemoryTest.jsx:83 ~ memoryLabel ~ event:', value);
   }; */
 
   return (

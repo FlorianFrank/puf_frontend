@@ -6,33 +6,42 @@ import Box from "@mui/material/Box";
 import * as PropTypes from "prop-types";
 import Router from "../../routes";
 import {FETCH_TEST_CATEGORIES} from "../../config";
-import ClipLoader from "react-spinners/ClipLoader";
+import {Alert} from "@mui/lab";
+import LoadingClip from "../Utils/LoadingClip";
+import {fetch_get} from "../Utils/AuthenticationUtils";
 
 
-function Routes(props) {
+function Routes() {
     return null;
 }
 
-const override = {
-    display: 'block',
-    margin: '0 auto',
-    borderColor: 'blue'
-};
-
 Routes.propTypes = {children: PropTypes.node};
-const EvaluationsPage = ({user}) => {
+const EvaluationsPage = () => {
     const [testExecutionTypes, setTestExecutionTypes] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [loading, setIsLoading] = useState(true)
+
+    const [alertIsSet, setAlertIsSet] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     const fetchTestCategories = async () => {
-        const res = await fetch(FETCH_TEST_CATEGORIES);
-        const json = await res.json();
-        setTestExecutionTypes(json.categories)
-        setIsLoading(false)
+
+        await fetch_get(FETCH_TEST_CATEGORIES, (value) => {
+            setAlertIsSet(value)
+        }, (value) => {
+            setAlertMessage(value)
+        }).then((retData) => {
+            console.log(retData)
+            if (retData) {
+                setTestExecutionTypes(retData.categories)
+                setIsLoading(false)
+            }
+        })
     }
 
     useEffect(() => {
-        fetchTestCategories()
+        fetchTestCategories().catch((errorMessage) => {
+            console.log('Error while calling fetchTestCategories', errorMessage)
+        })
 
     }, [])
 
@@ -62,70 +71,62 @@ const EvaluationsPage = ({user}) => {
         event.preventDefault();
     };
 
-    if (isLoading)
-        return (
-            <div className="sweet-loading">
-                <ClipLoader
-                    color="#ffff00"
-                    loading={true}
-                    size={150}
-                    cssOverride={override}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
-            </div>
-        );
-    else
-        return (
-            <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
-                <Router>
-                    <Route path="/addMemoryTest" element={<div>T$S</div>}/>
-                </Router>
-                <Header category="Evaluation" title="Select test type to evaluate"/>
-                <div className="flex flex-col justify-center items-center">
-                    <div className="flex flex-1 flex-col gap-3 lg:pl-3 mt-2 w-full">
-                        <form onSubmit={handleSubmit}>
-                            <div className="relative z-0 w-full mb-6 group">
-                                <select
-                                    id="underline_select"
-                                    className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                                    value={values.testType}
-                                    onChange={handleChange('testType')}
-                                >
-                                    <option selected>Select a test execution type</option>
-                                    {testExecutionTypes.map((testType) => (
-                                        <option key={testType.name} value={testType.name}>
-                                            {testType.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
-                                <button
+    if (alertIsSet)
+        return (<div><Alert severity="error">{alertMessage}</Alert></div>)
+    if (loading)
+        return (<LoadingClip/>);
 
-                                    type="submit"
-                                    className="bg-black text-white font-bold p-2 rounded-full w-28 outline-none"
-                                    onClick={() => {
-                                        if (values.testType === 'Memory Test')
-                                            navigate('/evaluation/memory');
-                                        else if (values.testType === 'Script Test')
-                                            navigate('/evaluation/cnt_fets');
-                                        else if (values.testType === 'Visual Programming Test')
-                                            navigate('/addGraphicalTest');
-                                        else if (values.testType === 'Carbon Nanotube Test')
-                                            navigate('/evaluation/cnt_fets');
-                                        else if (values.testType === 'Memristor Test')
-                                            navigate('/evaluate');
-                                    }}
-                                >
-                                    Next
-                                </button>
-                            </Box>
-                        </form>
-                    </div>
+    return (
+        <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
+            <Router>
+                <Route path="/addMemoryTest" element={<div>T$S</div>}/>
+            </Router>
+            <Header category="Evaluation" title="Select test type to evaluate"/>
+            <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-1 flex-col gap-3 lg:pl-3 mt-2 w-full">
+                    <form onSubmit={handleSubmit}>
+                        <div className="relative z-0 w-full mb-6 group">
+                            <select
+                                id="underline_select"
+                                className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                                value={values.testType}
+                                onChange={handleChange('testType')}
+                            >
+                                <option selected>Select a test execution type</option>
+                                {testExecutionTypes.map((testType) => (
+                                    <option key={testType.name} value={testType.name}>
+                                        {testType.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
+                            <button
+
+                                type="submit"
+                                className="bg-black text-white font-bold p-2 rounded-full w-28 outline-none"
+                                // TODO make dynamic
+                                onClick={() => {
+                                    if (values.testType === 'Memory Test')
+                                        navigate('/evaluation/memory');
+                                    else if (values.testType === 'Script Test')
+                                        navigate('/evaluation/cnt_fets');
+                                    else if (values.testType === 'Visual Programming Test')
+                                        navigate('/addGraphicalTest');
+                                    else if (values.testType === 'Carbon Nanotube Test')
+                                        navigate('/evaluation/cnt_fets');
+                                    else if (values.testType === 'Memristor Test')
+                                        navigate('/evaluate');
+                                }}
+                            >
+                                Next
+                            </button>
+                        </Box>
+                    </form>
                 </div>
             </div>
-        );
+        </div>
+    );
 };
 
 export default EvaluationsPage;
