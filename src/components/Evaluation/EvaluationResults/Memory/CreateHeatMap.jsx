@@ -18,7 +18,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { BASE_URL } from '../../config';
+import { BACKEND_BASE_URL } from '../../config';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -81,7 +81,7 @@ const CreateHeatMap = () => {
   }, []);
 
   let requestMetrics = async () => {
-    fetch(`${BASE_URL}/api/getMetrics/`, {
+    fetch(`${BACKEND_BASE_URL}/api/getMetrics/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -111,7 +111,7 @@ const CreateHeatMap = () => {
     // Code to save data goes here
     console.log('save'); // Update state to indicate that data has been saved
 
-    fetch(`${BASE_URL}/api/experiment/`, {
+    fetch(`${BACKEND_BASE_URL}/api/experiment/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
