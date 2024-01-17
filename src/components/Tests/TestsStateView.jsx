@@ -10,7 +10,9 @@ import Paper from '@mui/material/Paper';
 
 import {Header} from '../index';
 import {Alert} from "@mui/lab";
-import {BACKEND_IP_ADDRESS, FETCH_TEST_STATE} from "../../config";
+import {FETCH_TEST_STATE} from "../../config";
+import LoadingClip from "../Utils/LoadingClip";
+import {fetch_get} from "../Utils/AuthenticationUtils";
 
 const TestsStateView = ({test_state}) => {
     const [alertState, setAlertState] = useState(null);
@@ -18,6 +20,9 @@ const TestsStateView = ({test_state}) => {
     const [testsListRunning, setTestsListRunning] = useState([]);
     const [testsListCompleted, setTestsListCompleted] = useState([]);
 
+    const [loading, setLoading] = useState(true);
+    const [alertIsSet, setAlertIsSet] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     useEffect(() => {
         requestTestState('waiting')
@@ -35,10 +40,14 @@ const TestsStateView = ({test_state}) => {
     }
 
     let requestTests = async (test_state) => {
-        const fetchStr = FETCH_TEST_STATE + test_state
-        try {
-            let response = await fetch(fetchStr);
-            let data = await response.json();
+        const data = await
+            fetch_get(FETCH_TEST_STATE + test_state, (value) => {
+                setAlertIsSet(value)
+            }, (value) => {
+                setAlertMessage(value)
+            })
+        if (data) {
+            setLoading(false)
             const receivedTests = Object.values(data).reduce(
                 (acc, array) => acc.concat(array),
                 []
@@ -53,9 +62,6 @@ const TestsStateView = ({test_state}) => {
                 setTestsListRunning(receivedTests);
             else if (test_state === 'finished')
                 setTestsListCompleted(receivedTests);
-        } catch (error) {
-            setAlertState(<Alert
-                severity="warning">{'Could not fetch from ' + fetchStr + ' (' + error + ')'}</Alert>)
         }
     };
 
@@ -89,49 +95,56 @@ const TestsStateView = ({test_state}) => {
             return testsListCompleted;
     }
 
-    return (
-        <div className="m-2 md:m-10 mt-24 p-2 md:p-10 rounded-3xl">
-            {(alertState) ? alertState : ''}
-            <Header category="Tests" title={
-                (test_state === 'waiting') ? "Waiting Tests" : ((test_state === 'running') ? "Running Tests" : "Completed Tests")
-            }/>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 700}} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>ID</StyledTableCell>
-                            <StyledTableCell align="left">Title</StyledTableCell>
-                            <StyledTableCell align="left">Type</StyledTableCell>
-                            <StyledTableCell align="left">Device</StyledTableCell>
-                            <StyledTableCell align="left">Iteration</StyledTableCell>
-                            <StyledTableCell align="left">Status</StyledTableCell>
-                        </TableRow>
-                    </TableHead>
+    if (alertIsSet)
+        return (
+            <div><Alert severity="error">{alertMessage}</Alert></div>
+        );
+    if (loading)
+        return (<LoadingClip/>);
+    else
+        return (
+            <div className="m-2 md:m-10 mt-24 p-2 md:p-10 rounded-3xl">
+                {(alertState) ? alertState : ''}
+                <Header category="Tests" title={
+                    (test_state === 'waiting') ? "Waiting Tests" : ((test_state === 'running') ? "Running Tests" : "Completed Tests")
+                }/>
+                <TableContainer component={Paper}>
+                    <Table sx={{minWidth: 700}} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>ID</StyledTableCell>
+                                <StyledTableCell align="left">Title</StyledTableCell>
+                                <StyledTableCell align="left">Type</StyledTableCell>
+                                <StyledTableCell align="left">Device</StyledTableCell>
+                                <StyledTableCell align="left">Iteration</StyledTableCell>
+                                <StyledTableCell align="left">Status</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
 
-                    <TableBody>
-                        {getTestsList(test_state).map((row) => (
-                            <StyledTableRow key={row.id}>
-                                <StyledTableCell component="th" scope="row">
-                                    {row.id}
-                                </StyledTableCell>
-                                <StyledTableCell align="left">{row.title}</StyledTableCell>
-                                <StyledTableCell align="left">{row.testType}</StyledTableCell>
-                                <StyledTableCell align="left">
-                                    {row.device}
-                                </StyledTableCell>
-                                <StyledTableCell align="left">
-                                    {row.iteration}
-                                </StyledTableCell>
-                                <StyledTableCell align="left">
-                                    {row.status}
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-    );
+                        <TableBody>
+                            {getTestsList(test_state).map((row) => (
+                                <StyledTableRow key={row.id}>
+                                    <StyledTableCell component="th" scope="row">
+                                        {row.id}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">{row.title}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.testType}</StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        {row.device}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        {row.iteration}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        {row.status}
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        );
 };
 
 export default TestsStateView;
