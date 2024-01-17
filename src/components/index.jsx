@@ -1,3 +1,5 @@
+import VersionInfo from "./Utils/VersionInfo";
+
 export { default as Header } from './HeaderFooter/Header';
 export { default as Footer } from './HeaderFooter/Footer';
 export { default as Navbar } from './HeaderFooter/Navbar';
@@ -6,21 +8,19 @@ export { default as Other } from './Utils/Other';
 export { default as Spinner } from './Utils/Spinner';
 export { default as Notification } from './Utils/Notification';
 
+
 // Devices
 export { default as Devices } from './Devices/Devices';
 export { default as Device } from './Devices/Device';
 
 // Tests
 export { default as Tests } from './Tests/Tests';
-export { default as TestItem } from './Tests/TestItem';
 export { default as SearchTests } from './Tests/SearchTests';
 export { default as AddTest } from './Tests/AddTest/AddTest';
 export { default as ScriptExecution } from './Tests/AddTest/ScriptExecution';
 export { default as AddCNTTest } from './Tests/AddTest/AddCNTTest';
 export { default as TestDetail } from './Tests/TestDetail';
 export { default as TestNavbar } from './Tests/TestNavbar';
-export { default as TestLayoutMemoryTests } from './Tests/TestLayoutMemoryTests';
-export { default as TestLayoutCNTTests } from './Tests/TestLayoutCNTTests';
 export { default as StatusTable } from './Tests/StatusTable';
 export { default as StartTest } from './Tests/StartTest';
 

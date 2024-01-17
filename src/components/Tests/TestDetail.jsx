@@ -7,7 +7,9 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../../config';
+import {BACKEND_IP_ADDRESS, BACKEND_BASE_URL} from '../../config'
+import {Alert} from "@mui/lab";
+
 
 const TestDetail = () => {
   const navigate = useNavigate();
@@ -15,13 +17,23 @@ const TestDetail = () => {
   console.log(testId);
   const [test, setTest] = useState();
   const [response, setResponse] = useState(null);
+  const [alertState, setAlertState] = useState(null)
 
+  const [loading, setLoading] = useState(true);
+  const [alertIsSet, setAlertIsSet] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  // TODO not implemented by the backend
   const requestTestById = async (id) => {
-    // `http://127.0.0.1:8000/api/tests/?board=${board}&memory=${memory}`
-    let response = await fetch(`${BASE_URL}/api/tests/${testId}`);
-    let data = await response.json();
-    console.log('DATA:', data);
-    setTest(data);
+    const fetchStr = 'http://'+BACKEND_IP_ADDRESS+':8000/api/tests/'+testId
+    try{
+      let response = await fetch(fetchStr);
+      let data = await response.json();
+      console.log('DATA:', data);
+      setTest(data);
+    }catch (error){
+      setAlertState(<Alert severity="warning">{'Could not fetch from '+fetchStr+' ('+error+')'}</Alert>)
+    }
   };
 
   useEffect(() => {
@@ -29,10 +41,10 @@ const TestDetail = () => {
   }, [testId]);
 
   const startTest = async (id) => {
-    console.log('Start Test');
+    const fetchStr = 'http://'+BACKEND_IP_ADDRESS+':8088/startTest'
     try {
       const data = test;
-      const res = await fetch('http://127.0.0.1:8088/startTest', {
+      const res = await fetch(fetchStr, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -41,10 +53,14 @@ const TestDetail = () => {
       setResponse(json);
       console.log(response);
       navigate('/tests/running');
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      setAlertState(<Alert severity="warning">{'Could not fetch from '+fetchStr+' ('+error+')'}</Alert>)
     }
   };
+
+  if (alertIsSet)
+    return (<div><Alert severity="error">{alertMessage}</Alert></div>)
+
   if (test) {
     return (
       <Box sx={{ minWidth: 275 }}>
