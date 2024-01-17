@@ -1,0 +1,2 @@
+export const DEVICE_FETCH_INTERVAL = 4000
+export const FETCH_RESULTS_INTERVAL = 5000

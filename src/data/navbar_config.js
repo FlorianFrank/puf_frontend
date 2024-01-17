@@ -4,14 +4,6 @@ import {TbTruckLoading} from 'react-icons/tb';
 export const boards = ['STM32F429-Disc'];
 export const memoryTypes = ['MRAM', 'FRAM'];
 
-// TODO MOVE TO DATABASE
-export const wafers = [
-    1, 2, 3
-]
-
-export const pufIDs = [
-    11, 12, 13, 21, 22, 23, 31, 32, 33
-]
 
 export const memoryBrands = [
     'NXP',
@@ -39,45 +31,6 @@ export const FRAMModels = [
     'MR44V100AMAZAATL',
     'MR48V256CTAZAARL',
     'FM31L278-G'
-];
-
-export const testExecutionTypes = [
-    {
-        field: 'memoryTest',
-        name: 'Memory Test'
-    },
-    {
-        field: 'cntTest',
-        name: 'Carbon Nanotube Test'
-    },
-    {
-        field: 'cntTest',
-        name: 'Memristor Test'
-    },
-    {
-        field: 'scriptExecution',
-        name: 'Script Test'
-    },
-    {
-        field: 'graphicalRepresentation',
-        name: 'Visual Programming Test'
-    },
-
-]
-
-export const cntTestType = [
-    {
-        field: 'outputChar',
-        name: 'Output Characteristic'
-    },
-    {
-        field: 'transferChar',
-        name: 'Transfer Characteristic'
-    },
-    {
-        field: 'gateCurrent',
-        name: 'Gate Current'
-    }
 ];
 
 export const testTypes = [
@@ -132,18 +85,6 @@ export const links = [
                 path: 'devices',
                 icon: <BiDevices/>
             },
-
-            /*      {
-                    name: 'Inserted Devices',
-                    path: 'insertedDevices',
-                    isBadgeVisible: true,
-                    icon: <BiDevices />
-                  },
-                  {
-                    name: 'Connected Devices',
-                    path: 'connectedDevices',
-                    icon: <BiDevices />
-                  }*/
         ]
     },
 
