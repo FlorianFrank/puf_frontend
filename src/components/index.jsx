@@ -1,5 +1,3 @@
-import VersionInfo from "./Utils/VersionInfo";
-
 export { default as Header } from './HeaderFooter/Header';
 export { default as Footer } from './HeaderFooter/Footer';
 export { default as Navbar } from './HeaderFooter/Navbar';
@@ -55,3 +53,12 @@ export { default as MemoryComponent } from './Evaluation/EvaluationResults/Memor
 export { default as InterHammeingDistancetable } from './Evaluation/EvaluationResults/Memory/InterHammingDistanceTable';
 export { default as TestTypeComponent } from './Evaluation/EvaluationResults/Memory/TestTypeComponent';
 export {default as RawEvaluation} from './Evaluation/EvaluationResults/CNTs/RawEvaluation/RawEvaluation'
+
+export class RunningTests {
+}
+
+export class CompletedTests {
+}
+
+export class WaitingTests {
+}
