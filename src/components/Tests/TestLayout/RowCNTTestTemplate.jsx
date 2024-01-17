@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import {useNavigate} from 'react-router-dom';
-import {Chip, Collapse} from '@mui/material';
+import {Collapse} from '@mui/material';
 
 import {AiTwotoneDelete} from 'react-icons/ai';
 import {CiEdit} from 'react-icons/ci';
@@ -10,22 +10,18 @@ import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
-import {styled} from "@mui/material/styles";
 
 
 import {triggerStartTestToast} from "../../Utils/ToastManager";
 import {fetch_delete, fetch_post} from "../../Utils/AuthenticationUtils";
 import {useStateContext} from "../../../contexts/ContextProvider";
-import {FETCH_DELETE_CNT_TEST} from "../../../config";
+import {FETCH_DELETE_CNT_TEST_TEMPLATE} from "../../../config";
 
 
 const INVALID_SELECTION = -1;
@@ -33,7 +29,9 @@ const SELECT_ALL = -1;
 const REQUIRED_FIELD_MESSAGE = 'This field is required.';
 
 
-function Row({row}) {
+const RowCNTTestTemplate = ({row}) => {
+    const {testTemplates, setTestTemplates} = useStateContext();
+
     const {devices} = useStateContext();
     const [open, setOpen] = useState(false);
     const [response, setResponse] = useState(null);
@@ -63,14 +61,22 @@ function Row({row}) {
     const {waferConfig} = useStateContext();
 
     const deleteTest = (row) => {
-        fetch_delete(FETCH_DELETE_CNT_TEST + row.id, (value) => {
+        fetch_delete(FETCH_DELETE_CNT_TEST_TEMPLATE + row.id, (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
         }, row).then((data) => {
             if (data) {
-                console.log(data); // JSON data parsed by `data.json()` call
-                navigate('/tests', {replace: true});
+                if (data.status === 'ok') {
+                    let newTemplateList = []
+                    testTemplates.forEach((elem) => {
+                        if (!(elem['id'] === row.id && elem['category'] === 'cntpuf')) {
+                            newTemplateList.push(elem)
+                        }
+                    })
+                    setTestTemplates(newTemplateList)
+                } else
+                    setAlertMessage('fetch_delete returned: '+ data.status)
             }
         })
     };
@@ -80,7 +86,7 @@ function Row({row}) {
     };
 
     const startTest = async (id) => {
-        console.log('🚀 ~ file: TestLayoutMemoryTests.jsx:58 ~ startTest ~ id:', id);
+        console.log('🚀 ~ file: RowMemoryTestTemplate.jsx:58 ~ startTest ~ id:', id);
 
         const selectedDevice = devices.find(
             (device) => device.id.toString() === selectedDeviceId.toString()
@@ -94,7 +100,7 @@ function Row({row}) {
         };
         console.log(combinedData);
 
-        fetch_post(FETCH_DELETE_CNT_TEST + row.id, (value) => {
+        fetch_post(FETCH_DELETE_CNT_TEST_TEMPLATE + row.id, (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
@@ -290,9 +296,9 @@ function Row({row}) {
                                             value={values.waferID}
                                             onChange={handleChange('waferID')}
                                         >
-                                            <option value="">{values.waferID === -1 ? (
+                                            <option value="">{values.waferID === INVALID_SELECTION ? (
                                                 <p className="text-red-800 text-sm mt-1">
-                                                    selection required
+                                                    * selection required
                                                 </p>
                                             ) : (
                                                 ''
@@ -309,7 +315,7 @@ function Row({row}) {
                                             value={values.row}
                                             onChange={handleChange('row')}
                                         >
-                                            <option value="">{values.row === -1 ? (
+                                            <option value="">{values.row === INVALID_SELECTION ? (
                                                 <p className="text-red-800 text-sm mt-1">
                                                     selection required
                                                 </p>
@@ -328,7 +334,7 @@ function Row({row}) {
                                             value={values.column}
                                             onChange={handleChange('column')}
                                         >
-                                            <option value="">{values.column === -1 ? (
+                                            <option value="">{values.column === INVALID_SELECTION ? (
                                                 <p className="text-red-800 text-sm mt-1">
                                                     selection required
                                                 </p>
@@ -347,7 +353,7 @@ function Row({row}) {
                                             value={values.pufID}
                                             onChange={handleChange('pufID')}
                                         >
-                                            <option value="">{values.pufID === -1 ? (
+                                            <option value="">{values.pufID === INVALID_SELECTION ? (
                                                 <p className="text-red-800 text-sm mt-1">
                                                     selection required
                                                 </p>
@@ -371,7 +377,7 @@ function Row({row}) {
                                             value={values.row_on_puf}
                                             onChange={handleChange('row_on_puf')}
                                         >
-                                            <option value="">{values.row_on_puf === -1 ? (
+                                            <option value="">{values.row_on_puf === SELECT_ALL ? (
                                                 <p className="text-red-800 text-sm mt-1">
                                                     all
                                                 </p>
@@ -390,7 +396,7 @@ function Row({row}) {
                                             value={values.column_on_puf}
                                             onChange={handleChange('column_on_puf')}
                                         >
-                                            <option value="">{values.column_on_puf === -1 ? (
+                                            <option value="">{values.column_on_puf === SELECT_ALL ? (
                                                 <p className="text-red-800 text-sm mt-1">
                                                     all
                                                 </p>
@@ -450,59 +456,4 @@ function Row({row}) {
     );
 }
 
-const TestLayoutCNTTests = ({color, tests, type}) => {
-
-    const StyledTableHead = styled(TableHead)(({_theme}) => ({
-        backgroundColor: color
-    }));
-    const StyledTable = styled(Table)(({_theme}) => ({
-        '&:last-child td, &:last-child th': {
-            border: 0
-        },
-        borderColor: 'primary',
-        marginTop: '5px'
-    }));
-
-    const StyledChip1 = styled(Chip)(({_theme}) => ({
-        borderColor: color
-    }));
-
-    const StyledChip2 = styled(Chip)(({_theme}) => ({
-        backgroundColor: color
-    }));
-
-    return (
-        <React.Fragment>
-            <Stack direction="row" spacing={1}>
-                <StyledChip1 label={tests.length} variant="outlined"/>
-                <StyledChip2 label={type}/>
-            </Stack>
-            {tests.length !== 0 ? (
-                <TableContainer component={Paper}>
-                    <StyledTable aria-label="collapsible table">
-                        <StyledTableHead>
-                            <TableRow>
-                                <TableCell/>
-                                <TableCell align="left">Title</TableCell>
-                                <TableCell align="left">Test Type</TableCell>
-                                <TableCell align="left">Actions</TableCell>
-                            </TableRow>
-                        </StyledTableHead>
-
-                        <TableBody>
-                            {tests.map((test) => (
-                                <Row key={test.id} row={test}/>
-                            ))}
-                        </TableBody>
-                    </StyledTable>
-                </TableContainer>
-            ) : (
-                <Alert severity="info">
-                    This is an info alert — No records to display!
-                </Alert>
-            )}
-        </React.Fragment>
-    );
-};
-
-export default TestLayoutCNTTests;
+export default RowCNTTestTemplate;

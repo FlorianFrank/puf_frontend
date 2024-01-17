@@ -1,4 +1,5 @@
-import React, {useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
+
 
 import {useNavigate} from 'react-router-dom';
 import {Collapse} from '@mui/material';
@@ -10,20 +11,14 @@ import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import Alert from '@mui/material/Alert';
 
-import {styled} from '@mui/material/styles';
 import {useStateContext} from '../../../contexts/ContextProvider';
-import {BACKEND_IP_ADDRESS} from '../../../config'
+import {BACKEND_IP_ADDRESS, FETCH_DELETE_CNT_TEST_TEMPLATE, FETCH_DELETE_MEMORY_TEST_TEMPLATE} from '../../../config'
 
 import {
     memoryTypes,
@@ -31,14 +26,21 @@ import {
     MRAMModels,
     FRAMModels
 } from '../../../data/navbar_config';
+import {fetch_delete} from "../../Utils/AuthenticationUtils";
+import Alert from "@mui/material/Alert";
 
-function Row(props) {
+const RowMemoryTestTemplate = (props) => {
     const {row} = props;
+    const {testTemplates, setTestTemplates} = useStateContext();
+
     const {connectedDevices} = useStateContext();
     const [open, setOpen] = useState(false);
     const [response, setResponse] = useState(null);
     //const [connectedDevices, setConnectedDevices] = useState([]);
     const [selectedDeviceId, setSelectedDeviceId] = useState('');
+
+    const [alertIsSet, setAlertIsSet] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     const [values, setValues] = useState({
         memoryType: '',
@@ -57,24 +59,25 @@ function Row(props) {
     const navigate = useNavigate();
 
     const deleteTest = (row) => {
-        const requestOptions = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(row)
-        };
+        fetch_delete(FETCH_DELETE_MEMORY_TEST_TEMPLATE + row.id, (value) => {
+            setAlertIsSet(value)
+        }, (value) => {
+            setAlertMessage(value)
+        }, row).then((data) => {
+            if (data) {
+                if (data.status === 'ok') {
+                    let newTemplateList = []
+                    testTemplates.forEach((elem) => {
+                        if (!(elem['id'] === row.id && elem['category'] === 'memory')) {
+                            newTemplateList.push(elem)
+                        }
+                    })
+                    setTestTemplates(newTemplateList)
+                } else
+                    setAlertMessage('fetch_delete returned: ' + data.status)
+            }
+        })
 
-        const fetchStr = 'http://' + BACKEND_IP_ADDRESS + ':8000/testsApi/tests/' + row.id
-
-        fetch(fetchStr,
-            requestOptions
-        ).then((data) => {
-            console.log(data); // JSON data parsed by `data.json()` call
-            navigate('/tests', {replace: true});
-        }).catch((error) => {
-            alert(error)
-        });
     };
 
     const editTest = (id) => {
@@ -82,7 +85,7 @@ function Row(props) {
     };
 
     const startTest = async (id) => {
-        console.log('🚀 ~ file: TestLayoutMemoryTests.jsx:58 ~ startTest ~ id:', id);
+        console.log('🚀 ~ file: RowMemoryTestTemplate.jsx:58 ~ startTest ~ id:', id);
 
         const selectedDevice = connectedDevices.find(
             (device) => device.id.toString() === selectedDeviceId.toString()
@@ -121,7 +124,6 @@ function Row(props) {
         newErrors.memoryLabel = values.memoryLabel ? '' : 'This field is required.';
 
         setErrors(newErrors);
-        //return Object.keys(newErrors).length === 0;
 
         return Object.values(newErrors).every((x) => x === '');
     };
@@ -171,7 +173,8 @@ function Row(props) {
         setSelectedDeviceId(event.target.value);
     };
 
-    console.log(errors.memoryLabel);
+    if (alertIsSet)
+        return (<div><Alert severity="error">{alertMessage}</Alert></div>)
 
     return (
         <React.Fragment>
@@ -394,59 +397,4 @@ function Row(props) {
     );
 }
 
-const TestLayoutMemoryTests = ({color, tests, type}) => {
-    const StyledTableHead = styled(TableHead)(({theme}) => ({
-        backgroundColor: color
-    }));
-    const StyledTable = styled(Table)(({theme}) => ({
-        '&:last-child td, &:last-child th': {
-            border: 0
-        },
-        borderColor: 'primary',
-        marginTop: '5px'
-    }));
-
-    const StyledChip1 = styled(Chip)(({theme}) => ({
-        borderColor: color
-    }));
-
-    const StyledChip2 = styled(Chip)(({theme}) => ({
-        backgroundColor: color
-    }));
-
-    return (
-        <React.Fragment>
-            <Stack direction="row" spacing={1}>
-                <StyledChip1 label={tests.length} variant="outlined"/>
-                <StyledChip2 label={type}/>
-            </Stack>
-
-            {tests.length !== 0 ? (
-                <TableContainer component={Paper}>
-                    <StyledTable aria-label="collapsible table">
-                        <StyledTableHead>
-                            <TableRow>
-                                <TableCell/>
-                                <TableCell align="left">Title</TableCell>
-                                <TableCell align="left">Test Type</TableCell>
-                                <TableCell align="left">Actions</TableCell>
-                            </TableRow>
-                        </StyledTableHead>
-
-                        <TableBody>
-                            {tests.map((test) => (
-                                <Row key={test.id} row={test}/>
-                            ))}
-                        </TableBody>
-                    </StyledTable>
-                </TableContainer>
-            ) : (
-                <Alert severity="info">
-                    This is an info alert — No records to display!
-                </Alert>
-            )}
-        </React.Fragment>
-    );
-};
-
-export default TestLayoutMemoryTests;
+export default RowMemoryTestTemplate;
