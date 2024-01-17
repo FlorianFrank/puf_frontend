@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from "react-router-dom";
 
 
 const COLORS = {
@@ -26,16 +27,10 @@ const Button = ({style, className, onClick, children}) => (
     </button>
 );
 
-export const AddTest = ({ startTest }) => (
-    <Button style={{ background: COLORS.grey }} className="text-white py-1 px-2 capitalize rounded-1xl text-md" onClick={startTest}>
-        Add
-    </Button>
-);
-
-export const GetDeviceInfo = () => (
+export const AddTest = ({startTest}) => (
     <Button style={{background: COLORS.grey}} className="text-white py-1 px-2 capitalize rounded-1xl text-md"
-            onClick={() => alert('Currently not supported')}>
-        Get Device Info
+            onClick={startTest}>
+        Add
     </Button>
 );
 
@@ -51,13 +46,32 @@ const deviceTypeMap = {
     smu: 'SMU',
 };
 
-const Device = ({id, name, type, protocol, port, status}) => {
+const Device = ({id, name, type, protocol, port, status, idn, additional}) => {
     const deviceProtocolJsonToStr = (protocol) => deviceProtocolMap[protocol] || protocol;
     const deviceTypeJsonToStr = (devType) => deviceTypeMap[devType] || devType;
+    const navigate = useNavigate()
 
     const startTest = () => {
         alert('Currently not supported');
     };
+
+    const GetDeviceInfo = () => (
+        <Button style={{background: COLORS.grey}} className="text-white py-1 px-2 capitalize rounded-1xl text-md"
+                onClick={() => navigate('/deviceInfo', {
+                    state: {
+                        title: name,
+                        deviceDict: [{'key': 'Type', 'value': deviceTypeJsonToStr(type)},
+                            {'key': 'Protocol', 'value': deviceProtocolJsonToStr(protocol)},
+                            {'key': 'Port', 'value': port},
+                            {'key': '*IDN?', 'value': idn}].concat(additional).concat([{
+                            'key': 'Status',
+                            'value': status
+                        }])
+                    }
+                })}>
+            Get Device Info
+        </Button>
+    );
 
     return (
         <tr className="templateRow">
