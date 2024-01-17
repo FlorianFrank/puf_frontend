@@ -29,7 +29,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { CustomTable } from '../../components';
+import { CustomTable } from '../index';
 
 import { BACKEND_BASE_URL } from '../../config';
 
@@ -115,7 +115,7 @@ ColorlibStepIcon.propTypes = {
    */
   icon: PropTypes.node
 };
-const steps = ['Upload Measurements', 'Edit & Save'];
+const steps = ['Upload MeasurementSelector', 'Edit & Save'];
 
 const UploadStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
