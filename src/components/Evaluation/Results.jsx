@@ -8,7 +8,7 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import {format} from 'date-fns'; // Import the format function from date-fns
 import {Header} from '../../components';
 import {
-    DELETE_EVALUATION_RESULT, FETCH_DOWNLOAD_RESULT, FETCH_EVALUATION_RESULT,
+    FETCH_DELETE_EVALUATION_RESULT, FETCH_DOWNLOAD_RESULT, FETCH_EVALUATION_RESULT,
     FETCH_EVALUATION_STATUS
 } from "../../config";
 import {Alert} from "@mui/lab";
@@ -90,7 +90,7 @@ const Results = () => {
 
     const handleDelete = async (task) => {
         // Perform your delete operation here
-        fetch_delete(DELETE_EVALUATION_RESULT + task.id, (value) => {
+        fetch_delete(FETCH_DELETE_EVALUATION_RESULT + task.id, (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
