@@ -20,12 +20,14 @@ export const FETCH_DEVICES_LIST = BACKEND_BASE_URL + '/device_manager/get_device
 export const FETCH_TEST_CATEGORIES = BACKEND_BASE_URL + '/tests/get_test_categories/'
 export const FETCH_ADD_TEST = BACKEND_BASE_URL + '/tests/add_test/'
 export const FETCH_DEFAULT_VALUES = BACKEND_BASE_URL + '/tests/get_default_values/'
-export const FETCH_TEST_TEMPLATE_BY = BACKEND_BASE_URL + '/tests/get_tests/'
+export const FETCH_TEST_TEMPLATES = BACKEND_BASE_URL + '/tests/get_tests/'
 export const FETCH_UPLOADED_TESTS = BACKEND_BASE_URL +'/tests/get_uploaded/?type='
-export const FETCH_TEST_TEMPLATE = 'http://' + BACKEND_IP_ADDRESS + ':8089/test/tests/'
 export const FETCH_TEST_STATE = BACKEND_BASE_URL + '/nats/get_test_status/?filter='
 export const FETCH_DOWNLOAD_RESULT = BACKEND_BASE_URL + '/evaluation/download_result/?identifier='
-export const FETCH_DELETE_CNT_TEST = BACKEND_BASE_URL + '/tests/delete_test/?testType=CNTTest&id='
+export const FETCH_DELETE_CNT_TEST_TEMPLATE = BACKEND_BASE_URL + '/tests/delete_test/?testType=CNTTest&id='
+export const FETCH_DELETE_MEMORY_TEST_TEMPLATE = BACKEND_BASE_URL + '/tests/delete_test/?testType=memory&id='
+
+
 export const FETCH_SCHEDULE_TEST = BACKEND_BASE_URL + '/nats/schedule_test/'
 
 // Evaluation
