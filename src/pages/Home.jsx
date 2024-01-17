@@ -44,9 +44,9 @@ const Home = () => {
                 </TooltipComponent>
             </div>
 
-            {/* sidebar*/}
+            {/* Sidebar */}
             {activeMenu ? (
-                <div className="w-72 fixed sidebare dark:bg-secondary-dark-bg bg-white">
+                <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white">
                     <Sidebar/>
                 </div>
             ) : (
@@ -55,7 +55,7 @@ const Home = () => {
                 </div>
             )}
 
-            {/** Navbare */}
+            {/** Navbar */}
             <div
                 className={` dark:bg-main-bg bg-main-bg min-h-screen w-full
             ${activeMenu ? 'md:ml-72' : 'flex-2'}
@@ -106,17 +106,15 @@ const Home = () => {
                         />
 
                         <Route path="/metrics" element={<RawEvaluation/>}/>
-                        <Route path="/uploadMeasurments" element={<Upload/>}/>
+                        <Route path="/uploadMeasurements" element={<Upload/>}/>
                         <Route path="/results" element={<Results/>}/>
                     </Routes>
                 </div>
                 {/*End Routing */}
             </div>
-            {/* End Navbare */}
+            {/* End Navbar */}
         </div>
     );
 };
-
-//<Route path="/AddMemoryTest" element={<AddMemoryTest user={user} />} />
 
 export default Home;
