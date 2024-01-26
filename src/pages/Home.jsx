@@ -11,8 +11,7 @@ import {
     EvaluationStepper,
     Results,
     Upload,
-    EvaluationsPage,
-    RawEvaluation,
+    EvaluationsPage, RawEvaluation, TestDetail,
 } from '../components';
 
 import {TestsPage, Overview} from './index';
@@ -24,6 +23,8 @@ import AddCNTTest from '../components/Tests/AddTest/AddCNTTest';
 import AddMemoryTest from '../components/Tests/AddTest/AddMemoryTest';
 import TestsStateView from '../components/Tests/TestsStateView';
 import VersionInfo from '../components/Utils/VersionInfo';
+import DeviceInfo from "../components/Devices/DeviceInfo";
+import WaferOverview from "../components/Evaluation/EvaluationResults/CNTs/WaferPlotter/WaferOverview";
 
 const Home = () => {
 
@@ -75,6 +76,8 @@ const Home = () => {
                         <Route path="/addScriptTest" element={<ScriptExecution/>}/>
                         <Route path="/addCNTTest" element={<AddCNTTest/>}/>
                         <Route path="/versionInfo" element={<VersionInfo/>}/>
+                        <Route path="/uploadMeasurments" element={<Upload/>}/>
+                        <Route path="/deviceInfo" element={<DeviceInfo/>}/>
                         {/**TESTS */}
                         <Route path="/tests" element={<TestsPage/>}/>
                         <Route
@@ -105,9 +108,11 @@ const Home = () => {
                             element={<EvaluationsPage/>}
                         />
 
-                        <Route path="/metrics" element={<RawEvaluation/>}/>
+                        <Route path="/metrics/rawEvaluation" element={<RawEvaluation/>}/>
+                        <Route path="/metrics/waferOverview" element={<WaferOverview/>}/>
                         <Route path="/uploadMeasurements" element={<Upload/>}/>
                         <Route path="/results" element={<Results/>}/>
+                        <Route path="/testDetail" element={<TestDetail/>}/>
                     </Routes>
                 </div>
                 {/*End Routing */}
