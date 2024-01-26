@@ -42,7 +42,7 @@ function selectDeviceFigure(deviceIdentifier) {
             return microcontroller_raspberry_pi_3;
     }
 
-    return ''
+    return nanosec_matrix
 }
 
 const DeviceInfo = () => {
@@ -54,7 +54,7 @@ const DeviceInfo = () => {
             <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
                 <Header category="Dashboard" title='Device Info'/>
                 <div>
-                    <div style={{float: 'left', paddingTop: '5%', paddingRight: '5%'}}>
+                    <div style={{float: 'left', paddingTop: '3.5%', paddingRight: '5%'}}>
                         <img src={selectDeviceFigure(title)} style={{maxHeight: '600px', maxWidth: '400px'}} alt="logo"/>
                     </div>
                     <div style={{flex: '1', background: 'white'}}>

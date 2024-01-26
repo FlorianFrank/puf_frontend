@@ -23,8 +23,9 @@ import MeasurementTemplate from "./MeasurementTemplate";
 import RawEvaluationTable from "./RawEvaluationTable";
 import TestStatusTable from "../../TestStatusTable";
 import {StyledCard} from "../../../../Utils/StyledComponents";
+import WaferEvaluationTable from "./RawEvaluationTable";
 
-const RawEvaluation = () => {
+const WaferOverview = () => {
     let location = useLocation();
 
     const [alertIsSet, setAlertIsSet] = useState(false);
@@ -127,15 +128,15 @@ const RawEvaluation = () => {
                                              expanded: value
                                          })} expanded={expanded}/>
                 </CardContent>
-                <CardContent>
+                {false && <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
                         Evaluation Results
                     </Typography>
-                    <RawEvaluationTable evaluationData={evaluationData} setExpanded={(value) => setExpandedStates({
+                    <WaferEvaluationTable evaluationData={evaluationData} setExpanded={(value) => setExpandedStates({
                         ...expandedStates,
                         expandEvaluationTable: value
                     })} expanded={expandEvaluationTable}/>
-                </CardContent>
+                </CardContent>}
                 <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
                         Visualization
@@ -149,4 +150,4 @@ const RawEvaluation = () => {
     );
 };
 
-export default RawEvaluation;
+export default WaferOverview;
