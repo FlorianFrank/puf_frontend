@@ -60,6 +60,7 @@ const EvaluationSelector = ({isStepWarning, evalType}) => {
     const startEvaluation = async () => {
         const requestData = {
             title: evaluationData.title,
+            type: evalType,
             measurements: selectedMeasurements,
             evaluationMethod: evaluationData.evaluationMethod,
             iteration: evaluationData.selectedIteration

@@ -10,144 +10,193 @@ import {
 import {Alert} from "@mui/lab";
 import {fetch_get} from "../../Utils/AuthenticationUtils";
 import LoadingClip from "../../Utils/LoadingClip";
+import {Button} from "@mui/material";
+import {useNavigate} from 'react-router-dom';
 
-const columns_cnt_pufs = [
-    {field: 'id', headerName: 'ID', width: 100},
-    {
-        field: 'testType',
-        headerName: 'Test Type',
-        width: 200
-    },
-    {
-        field: 'testName',
-        headerName: 'Test Name',
-        width: 300
-    },
-    {
-        field: 'wafer',
-        headerName: 'Wafer',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'rowOnWafer',
-        headerName: 'Row',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'columnOnWafer',
-        headerName: 'Column',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'pufID',
-        headerName: 'PUF ID',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'rowOnPUF',
-        headerName: 'Row on PUF',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'columnOnPUF',
-        headerName: 'Column on PUF',
-        type: 'number',
-        width: 150
-    },
-    {
-        field: 'temperature',
-        headerName: 'Temperature',
-        type: 'number',
-        width: 100
-    },
 
-    {
-        field: 'iteration',
-        headerName: 'Iterations',
-        type: 'number',
-        width: 100
-    },
-    {
-        field: 'uploaded',
-        headerName: 'Uploaded',
-        width: 100,
-        type: 'boolean',
-        renderCell: (params) => (
-            <span style={{color: params.value === true ? 'green' : 'red'}}>
+const columns_cnt_pufs = (onClickFunction) => {
+    return [
+        {field: 'id', headerName: 'ID', width: 100},
+        {
+            field: 'testType',
+            headerName: 'Test Type',
+            width: 200
+        },
+        {
+            field: 'testName',
+            headerName: 'Test Name',
+            width: 300
+        },
+        {
+            field: 'wafer',
+            headerName: 'Wafer',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'rowOnWafer',
+            headerName: 'Row',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'columnOnWafer',
+            headerName: 'Column',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'pufID',
+            headerName: 'PUF ID',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'rowOnPUF',
+            headerName: 'Row on PUF',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'columnOnPUF',
+            headerName: 'Column on PUF',
+            type: 'number',
+            width: 150
+        },
+        {
+            field: 'temperature',
+            headerName: 'Temperature',
+            type: 'number',
+            width: 100
+        },
+
+        {
+            field: 'iteration',
+            headerName: 'Iterations',
+            type: 'number',
+            width: 100
+        },
+        {
+            field: 'testConfig',
+            headerName: 'Test Info',
+            width: 100,
+            renderCell: (params) => (
+                <Button
+                    style={{background: 'grey', color: 'white'}}
+                    onClick={() => {
+                        onClickFunction(params.row)
+                    }}
+                    className="statusButton text-white py-1 px-2 capitalize rounded-2xl text-md"
+                >
+                    Info
+                </Button>
+            )
+        },
+        {
+            field: 'uploaded',
+            headerName: 'Uploaded',
+            width: 100,
+            type: 'boolean',
+            renderCell: (params) => (
+                <span style={{color: params.value === true ? 'green' : 'red'}}>
         {params.value ? (
             <UploadIcon style={{color: 'green'}}/>
         ) : (
             <FileDownloadOffIcon style={{color: 'red'}}/>
         )}
       </span>
-        )
-    }
-    /*{
-      field: 'fileName',
-      headerName: 'File',
-      width: 100
-    }*/
-];
+            )
+        }
+        /*{
+          field: 'fileName',
+          headerName: 'File',
+          width: 100
+        }*/
+    ];
+}
 
-const columns_memory_pufs = [
-    {field: 'id', headerName: 'ID', width: 100},
-    {
-        field: 'testType',
-        headerName: 'Test Type',
-        width: 200
-    },
-    {
-        field: 'memoryLabel',
-        headerName: 'Test Name',
-        width: 300
-    },
-    {
-        field: 'dataSetupTime',
-        headerName: 'DST',
-        type: 'number',
-        width: 200
-    },
-    {
-        field: 'voltage',
-        headerName: 'Voltage',
-        type: 'number',
-        width: 200
-    },
-    {
-        field: 'temperature',
-        headerName: 'Temperature',
-        type: 'number',
-        width: 200
-    },
+const columns_memory_pufs = (onClickFunction) => {
+    return [
+        {field: 'id', headerName: 'ID', width: 100},
+        {
+            field: 'testType',
+            headerName: 'Test Type',
+            width: 200
+        },
+        {
+            field: 'testTitle',
+            headerName: 'Test Title',
+            width: 300
+        },
+        {
+            field: 'initValue',
+            headerName: 'Init Value',
+            width: 200
+        },
+        {
+            field: 'memoryType',
+            headerName: 'Memory Type',
+            width: 200
+        },
+        {
+            field: 'manufacturer',
+            headerName: 'Manufacturer',
+            width: 200
+        },
+        {
+            field: 'model',
+            headerName: 'Model',
+            width: 200
+        },
+        {
+            field: 'memIdentifier',
+            headerName: 'Memory Identifier',
+            width: 200
+        },
+        {
+            field: 'iterations',
+            headerName: 'Iterations',
+            width: 200
+        },
+        {
+            field: 'testConfig',
+            headerName: 'Test Info',
+            width: 100,
+            renderCell: (params) => (
+                <Button
+                    style={{background: 'grey', color: 'white'}}
+                    onClick={() => {
+                        onClickFunction(params.row)
+                    }}
+                    className="statusButton text-white py-1 px-2 capitalize rounded-2xl text-md"
+                >
+                    Info
+                </Button>
+            )
+        },
 
-    {
-        field: 'iteration',
-        headerName: 'Iteration',
-        width: 200
-    },
-    {
-        field: 'uploaded',
-        headerName: 'Uploaded',
-        width: 200,
-        type: 'boolean',
-        renderCell: (params) => (
-            <span style={{color: params.value === true ? 'green' : 'red'}}>
+        {
+            field: 'uploaded',
+            headerName: 'Uploaded',
+            width: 200,
+            type: 'boolean',
+            renderCell: (params) => (
+                <span style={{color: params.value === true ? 'green' : 'red'}}>
         {params.value ? (
             <UploadIcon style={{color: 'green'}}/>
         ) : (
             <FileDownloadOffIcon style={{color: 'red'}}/>
         )}
       </span>
-        )
-    }
-];
+            )
+        }
+    ];
+}
 
 export default function MeasurementSelector({updateIsStepWarning, evalType}) {
+
+    const navigate = useNavigate()
+
     const [rows, setRows] = useState([]);
     const [loadingUploaded, setLoadingUploaded] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -209,7 +258,6 @@ export default function MeasurementSelector({updateIsStepWarning, evalType}) {
         }, (value) => {
             setAlertMessage(value)
         }).then((data) => {
-            console.log('DATA', data)
             if (data) {
                 const measurements = Object.values(data.processedData).reduce(
                     (acc, array) => acc.concat(array),
@@ -261,11 +309,67 @@ export default function MeasurementSelector({updateIsStepWarning, evalType}) {
     if (loading || loadingUploaded)
         return (<LoadingClip/>);
 
+    function capitalizeEachWord(sentence) {
+        // Split the sentence into an array of words
+        let words = sentence.split(' ');
+
+        // Capitalize the first letter of each word
+        let capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+
+        // Join the capitalized words back into a sentence
+        let capitalizedSentence = capitalizedWords.join(' ');
+
+        return capitalizedSentence;
+    }
+
     const get_layout = () => {
         if (evalType === 'cnt_puf')
-            return columns_cnt_pufs
+            return columns_cnt_pufs((parameters) => {
+                navigate('/testDetail',
+                    {
+                        state: {
+                            testTitle: parameters['testTitle'],
+                            testCategory: 'cntpuf',
+                            testDetails: [
+                                {'key': 'Identifier', 'value': parameters['id']},
+                                {'key': 'Test Type', 'value': parameters['testType']},
+                                {'key': 'Wafer', 'value': parameters['wafer']},
+                                {'key': 'Row on Wafer', 'value': parameters['rowOnWafer']},
+                                {'key': 'Column on Wafer', 'value': parameters['columnOnWafer']},
+                                {'key': 'PUF ID', 'value': parameters['pufID']},
+                                {'key': 'Row on PUF', 'value': parameters['rowOnPUF']},
+                                {'key': 'Column on PUF', 'value': parameters['columnOnPUF']},
+                                {'key': 'Temperature', 'value': parameters['temperature']},
+                                {'key': 'Iteration', 'value': parameters['iteration']},
+                            ]
+                        }
+                    })
+                }
+            )
         else if (evalType === 'memory')
-            return columns_memory_pufs
+            return columns_memory_pufs((parameters) => {
+                navigate('/testDetail',
+                    {
+                        state: {
+                            testTitle: parameters['testTitle'],
+                            testCategory: 'memory',
+                            testDetails: [
+                                {'key': 'Identifier', 'value': parameters['id']},
+                                {'key': 'Test Type', 'value': parameters['testType']},
+                                {'key': 'Memory Type', 'value': parameters['memoryType']},
+                                {'key': 'Memory Model', 'value': parameters['model']},
+                                {'key': 'Identifier', 'value': parameters['memIdentifier']},
+                                {'key': 'Initialization Value', 'value': parameters['initValue']},
+                                ...parameters['testConfig'].flatMap((m) =>
+                                    Object.entries(m).map(([key, value]) => ({
+                                        'key': capitalizeEachWord(key.replace('_', ' ')),
+                                        'value': value
+                                    }))
+                                )
+                            ]
+                        }
+                    })
+            })
     }
 
     return (
