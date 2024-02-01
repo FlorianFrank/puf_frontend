@@ -5,6 +5,8 @@ export const BACKEND_IP_PORT = 8000
 export const BACKEND_BASE_URL = 'http://' + BACKEND_IP_ADDRESS + ':' + BACKEND_IP_PORT
 
 // NATS
+export const FETCH_SERVER_INFO = BACKEND_BASE_URL + '/serverinfo/get_info/'
+export const FETCH_SERVER_PERFORMANCE = BACKEND_BASE_URL + '/serverinfo/get_performance_info/'
 export const FETCH_START_NATS = BACKEND_BASE_URL + '/nats/start/'
 
 // Authentication
@@ -14,7 +16,9 @@ export const FETCH_LOGOUT = BACKEND_BASE_URL + '/authentication/logout/'
 
 
 // Devices
-export const FETCH_DEVICES_LIST = BACKEND_BASE_URL + '/device_manager/get_devices/'
+export const FETCH_DEVICES_LIST = BACKEND_BASE_URL + '/devices/get_devices/'
+export const FETCH_ADD_DEVICE = BACKEND_BASE_URL + '/devices/add_device/'
+
 
 // Tests
 export const FETCH_TEST_CATEGORIES = BACKEND_BASE_URL + '/tests/get_test_categories/'
@@ -35,9 +39,11 @@ export const FETCH_EVALUATED_DATA = BACKEND_BASE_URL + '/tests/get_evaluated_dat
 export const FETCH_START_EVALUATION = BACKEND_BASE_URL + '/evaluation/start_evaluation/'
 export const FETCH_EVALUATION_STATUS = BACKEND_BASE_URL + '/evaluation/get_status/'
 export const FETCH_EVALUATION_RESULT = BACKEND_BASE_URL + '/evaluation/result/?taskID='
-export const FETCH_CONNECTED_MEASUREMENTS = BACKEND_BASE_URL + '/evaluation/get_connected_measurements/?taskID='
+export const FETCH_CONNECTED_CNT_MEASUREMENTS = BACKEND_BASE_URL + '/evaluation/get_connected_measurements/?type=cnt_puf&taskID='
+export const FETCH_CONNECTED_MEMORY_MEASUREMENTS = BACKEND_BASE_URL + '/evaluation/get_connected_measurements/?type=memory?taskID='
 export const FETCH_VISUALIZATION_RESULT = BACKEND_BASE_URL + '/evaluation/visualizations/?taskID='
 export const FETCH_DELETE_EVALUATION_RESULT = BACKEND_BASE_URL + '/evaluation/delete_result/?taskID='
+export const FETCH_EVALUATION_CONFIG = BACKEND_BASE_URL + '/evaluation/get_evaluation_config/'
 
 // Carbon NanoTubes
-export const FETCH_WAFER_CONFIG = BACKEND_BASE_URL + '/cnts/get_wafer_configs/'
+export const FETCH_WAFER_CONFIG = BACKEND_BASE_URL + '/devices/get_wafer_configs/'
