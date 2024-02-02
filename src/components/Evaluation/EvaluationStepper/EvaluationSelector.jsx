@@ -7,23 +7,35 @@ import {
 } from '@mui/material';
 import {fetch_post} from "../../Utils/AuthenticationUtils";
 import {Alert} from "@mui/lab";
-import EvaluationFormCNTs from "./CNTs/EvaluationFormCNTs";
-import EvaluationFormMemories from "./Memories/EvaluationFormMemories";
+import GenericEvaluationForm from "./GenericEvaluationForm";
 import {useStyles} from "../../Utils/StyledComponents";
+import {useStateContext} from "../../../contexts/ContextProvider";
 
 const EvaluationSelector = ({isStepWarning, evalType}) => {
     const styleClasses = useStyles();
 
+    const {selectedVisualizationProperties, setSelectedVisualizationProperties} = useStateContext();
+
+
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
-    const [evaluationData, setEvaluationData] = useState({
-        title: '',
-        uniformityChallenges: ['dataSetupTime'],
-        robustnessChallenges: ['dataSetupTime'],
-        uniquenessChallenges: ['dataSetupTime'],
-        evaluationMethod: 'rawFigure',
-        selectedIteration: 1,
+    const [evaluationData, setEvaluationData] = useState(() => {
+        if (evalType === 'cnt_puf')
+        return {
+            title: '',
+            evaluationMethod: 'rawFigure',
+            selectedIteration: 1,
+        }
+
+        if (evalType === 'memory')
+            return {
+                title: '',
+                uniformityChallenges: ['dataSetupTime'],
+                robustnessChallenges: ['dataSetupTime'],
+                uniquenessChallenges: ['dataSetupTime'],
+                evaluationMethod: 'classicalPUFMetrics',
+            }
     });
 
     const selectedMeasurements = JSON.parse(localStorage.getItem('selectedMeasurements')) || [];
@@ -63,9 +75,9 @@ const EvaluationSelector = ({isStepWarning, evalType}) => {
             type: evalType,
             measurements: selectedMeasurements,
             evaluationMethod: evaluationData.evaluationMethod,
-            iteration: evaluationData.selectedIteration
+            evaluationProperties: selectedVisualizationProperties,
+            iteration: evaluationData.selectedIteration,
         };
-
         await fetch_post(FETCH_START_EVALUATION, setAlertIsSet, setAlertMessage, requestData).then((retData) => {
             if (retData) {
                 const taskId = retData['task_id'];
@@ -77,23 +89,21 @@ const EvaluationSelector = ({isStepWarning, evalType}) => {
 
 
     const selectEvaluationForm = (evalType) => {
+        let iterations = 0
+        let eventHandlers = {}
         if (evalType === 'cnt_puf') {
-            const iterations = Array.from({length: selectedMeasurements[0].iteration}, (_, index) => index + 1);
-            return <EvaluationFormCNTs
-                iterations={iterations}
-                eventHandlers={{
-                    'handleSelectEvaluationMethod': handleSelectEvaluationMethod,
-                    'handleSelectIteration': handleSelectIteration
-                }}
-                evaluationData={evaluationData}
-            />;
+            iterations = Array.from({length: selectedMeasurements[0].iteration}, (_, index) => index + 1);
+            eventHandlers = {
+                'handleSelectEvaluationMethod': handleSelectEvaluationMethod,
+                'handleSelectIteration': handleSelectIteration
+            }
         }
-        if (evalType === 'memory') {
-            return <EvaluationFormMemories
-                evaluationData={evaluationData}
-                eventHandler={handleChallengesChange}
-            />;
-        }
+        return <GenericEvaluationForm
+            testCategory={evalType}
+            iterations={iterations}
+            eventHandlers={eventHandlers}
+            evaluationData={evaluationData}
+        />;
     };
 
 
@@ -120,7 +130,7 @@ const EvaluationSelector = ({isStepWarning, evalType}) => {
                     disabled={!isValidForm || isStepWarning}
                     onClick={startEvaluation}
                 >
-                    Start The Evaluation
+                    Start Evaluation
                 </Button>
             </form>
         </React.Fragment>
