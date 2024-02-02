@@ -43,7 +43,8 @@ export const FETCH_CONNECTED_CNT_MEASUREMENTS = BACKEND_BASE_URL + '/evaluation/
 export const FETCH_CONNECTED_MEMORY_MEASUREMENTS = BACKEND_BASE_URL + '/evaluation/get_connected_measurements/?type=memory?taskID='
 export const FETCH_VISUALIZATION_RESULT = BACKEND_BASE_URL + '/evaluation/visualizations/?taskID='
 export const FETCH_DELETE_EVALUATION_RESULT = BACKEND_BASE_URL + '/evaluation/delete_result/?taskID='
-export const FETCH_EVALUATION_CONFIG = BACKEND_BASE_URL + '/evaluation/get_evaluation_config/'
+export const FETCH_EVALUATION_CONFIG = BACKEND_BASE_URL + '/evaluation/get_evaluation_config/?testType='
+export const FETCH_EVALUATION_TYPES = BACKEND_BASE_URL + '/evaluation/get_evaluation_types/?testCategory='
 
 // Carbon NanoTubes
 export const FETCH_WAFER_CONFIG = BACKEND_BASE_URL + '/devices/get_wafer_configs/'
