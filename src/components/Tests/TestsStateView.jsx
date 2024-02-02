@@ -13,12 +13,19 @@ import {Alert} from "@mui/lab";
 import {FETCH_TEST_STATE} from "../../config";
 import LoadingClip from "../Utils/LoadingClip";
 import {fetch_get} from "../Utils/AuthenticationUtils";
+import IconButton from "@mui/material/IconButton";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import Card from "@mui/material/Card";
+import {Stack} from "@mui/material";
 
-const TestsStateView = ({test_state}) => {
+const TestsStateView = ({test_state, headerBgColor}) => {
     const [alertState, setAlertState] = useState(null);
     const [testsListWaiting, setTestsListWaiting] = useState([]);
     const [testsListRunning, setTestsListRunning] = useState([]);
     const [testsListCompleted, setTestsListCompleted] = useState([]);
+    const [collapsibleOpen, setCollapsibleOpen] = useState(true);
+
 
     const [loading, setLoading] = useState(true);
     const [alertIsSet, setAlertIsSet] = useState(false);
@@ -38,6 +45,21 @@ const TestsStateView = ({test_state}) => {
                 console.error(`requestTests returned ${error}`)
             });
     }
+
+    const StyledChip = styled(Card)(() => ({
+        backgroundColor: headerBgColor,
+        width: '100%',
+        marginTop: '5%'
+    }));
+
+
+    const StyledTable = styled(Table)(() => ({
+        '&:last-child td, &:last-child th': {
+            border: 0
+        },
+        borderColor: 'primary',
+        marginTop: '5px'
+    }));
 
     let requestTests = async (test_state) => {
         const data = await
@@ -103,47 +125,56 @@ const TestsStateView = ({test_state}) => {
         return (<LoadingClip/>);
     else
         return (
-            <div className="m-2 md:m-10 mt-24 p-2 md:p-10 rounded-3xl">
-                {(alertState) ? alertState : ''}
-                <Header category="Tests" title={
-                    (test_state === 'waiting') ? "Waiting Tests" : ((test_state === 'running') ? "Running Tests" : "Completed Tests")
-                }/>
-                <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 700}} aria-label="customized table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>ID</StyledTableCell>
-                                <StyledTableCell align="left">Title</StyledTableCell>
-                                <StyledTableCell align="left">Type</StyledTableCell>
-                                <StyledTableCell align="left">Device</StyledTableCell>
-                                <StyledTableCell align="left">Iteration</StyledTableCell>
-                                <StyledTableCell align="left">Status</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                            {getTestsList(test_state).map((row) => (
-                                <StyledTableRow key={row.id}>
-                                    <StyledTableCell component="th" scope="row">
-                                        {row.id}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">{row.title}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.testType}</StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {row.device}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {row.iteration}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {row.status}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
+            <Stack direction="row" spacing={1}>
+                <StyledChip>
+                    <h1 style={{
+                        'font-size': '20px',
+                        'font-weight': 'bold',
+                        'color': 'white'
+                    }}>{(test_state === 'waiting') ? "Waiting Tests" : ((test_state === 'running') ? "Running Tests" : "Completed Tests")}</h1>
+                    <TableContainer component={Paper}>
+                        <StyledTable aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>ID</StyledTableCell>
+                                    <StyledTableCell align="left">Title</StyledTableCell>
+                                    <StyledTableCell align="left">Type</StyledTableCell>
+                                    <StyledTableCell align="left">Device</StyledTableCell>
+                                    <StyledTableCell align="left">Iteration</StyledTableCell>
+                                    <StyledTableCell align="left">Status</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <IconButton
+                                    aria-label="expand row"
+                                    size="small"
+                                    onClick={() => setCollapsibleOpen(!collapsibleOpen)}
+                                >
+                                    {collapsibleOpen ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                                </IconButton>
+                                {collapsibleOpen && getTestsList(test_state).map((row) => (
+                                    <StyledTableRow key={row.id}>
+                                        <StyledTableCell component="th" scope="row">
+                                            {row.id}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">{row.title}</StyledTableCell>
+                                        <StyledTableCell align="left">{row.testType}</StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {row.device}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {row.iteration}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {row.status}
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </StyledTable>
+                    </TableContainer>
+                </StyledChip>
+            </Stack>
         );
 };
 
