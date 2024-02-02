@@ -8,107 +8,134 @@ import {
 } from "@mui/material";
 import {ColorPicker} from "material-ui-color";
 
-import {useStyles} from "../../../Utils/StyledComponents";
-import {fetch_get} from "../../../Utils/AuthenticationUtils";
-import {FETCH_EVALUATION_CONFIG} from "../../../../config";
+import {useStyles} from "../../Utils/StyledComponents";
+import {fetch_get} from "../../Utils/AuthenticationUtils";
+import {FETCH_EVALUATION_CONFIG, FETCH_EVALUATION_TYPES} from "../../../config";
 import {Alert} from "@mui/lab";
-import LoadingClip from "../../../Utils/LoadingClip";
-import {colorMap} from "../../../../data/visualization_config";
+import LoadingClip from "../../Utils/LoadingClip";
+import {colorMap} from "../../../data/visualization_config";
+import {useStateContext} from "../../../contexts/ContextProvider";
 
-const EvaluationFormCNTs = ({iterations, eventHandlers, evaluationData}) => {
+const GenericEvaluationForm = ({testCategory, iterations, eventHandlers, evaluationData}) => {
     const styleClasses = useStyles();
 
     const [evaluationType, setEvaluationType] = useState({})
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoadingTestMethods, setIsLoadingTestMethods] = useState(true)
+    const [isLoadingTestConfig, setIsLoadingTestConfig] = useState(true)
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [evaluationMethods, setEvaluationMethods] = useState({});
 
-    // TODO provide this from the backend
-    const evaluationMethods = [
-        {label: 'Visualization of Raw data', value: 'rawFigure'},
-        {label: 'Quantization (2-States)', value: 'quantize_2_states'},
-        {label: 'Quantization (3-States)', value: 'quantize_3_states'},
-        {label: 'Wafer Visualizer', value: 'waferVisualizer'}, // Corrected duplicate value
-    ];
 
-    const [selectedProperties, setSelectedProperties] = useState({})
+    const {selectedVisualizationProperties, setSelectedVisualizationProperties} = useStateContext();
 
     const handleChange = (name) => (event) => {
-        setSelectedProperties({...selectedProperties, [name]: event.target.value});
+        setSelectedVisualizationProperties({...selectedVisualizationProperties, [name]: event.target.value});
     };
 
     const handleChangeColorPicker = (name) => (event) => {
-        setSelectedProperties({...selectedProperties, [name]: event});
+        setSelectedVisualizationProperties({...selectedVisualizationProperties, [name]: '#' + event.hex});
     };
 
-    const fetchEvaluationConfig = async (testType) => {
-        await fetch_get(FETCH_EVALUATION_CONFIG + '?testType=' + testType, (value) => {
+    const fetchEvaluationType = async (testCategory) => {
+        await fetch_get(FETCH_EVALUATION_TYPES + testCategory, (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
         }).then((retData) => {
-            console.log(retData)
+            if (retData) {
+                setEvaluationMethods(retData['evaluationMethods']);
+                setIsLoadingTestMethods(false);
+                if (testCategory === 'cnt_puf') {
+                    fetchEvaluationConfig('rawFigure').catch((error) => {
+                        console.log('Error while calling fetchEvaluationConfig: ' + error)
+                    })
+                } else if (testCategory === 'memory') {
+                    fetchEvaluationConfig('classicalPUFMetrics').catch((error) => {
+                        console.log('Error while calling fetchEvaluationConfig: ' + error)
+                    })
+                }
+            }
+        })
+    };
+
+
+    const fetchEvaluationConfig = async (testType) => {
+        await fetch_get(FETCH_EVALUATION_CONFIG + testType, (value) => {
+            setAlertIsSet(value)
+        }, (value) => {
+            setAlertMessage(value)
+        }).then((retData) => {
             if (retData) {
                 setEvaluationType(retData);
-                setIsLoading(false)
+                let visualizationProperties = {};
+                retData['properties'].forEach((prop) => {
+                    visualizationProperties[prop['label']] = prop['default'];
+                });
+                setSelectedVisualizationProperties(visualizationProperties);
+                setIsLoadingTestConfig(false);
             }
         })
     };
 
     useEffect(() => {
-        fetchEvaluationConfig('rawFigure').catch((error) => {
+        fetchEvaluationType(testCategory).catch((error) => {
             console.log('Error while calling fetchEvaluationConfig: ' + error)
         })
     }, [])
 
     const renderSelect = (label, title, values, defaultValue) => {
         return <div className="flex">
-                <span style={{width: '400px'}}
+                <span style={{width: '25%'}}
                       className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                  {title}
-                </span>
-            <Select
-                id="underline_select"
-                className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                value={(!selectedProperties[label]) ? defaultValue : selectedProperties[label]}
-                onChange={handleChange(label)}
-            >
+                {title}
+                    </span>
+            <div style={{width: '75%', paddingLeft: '2%'}}>
+                <Select
+                    id="underline_select"
+                    className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                    value={(!selectedVisualizationProperties[label]) ? defaultValue : selectedVisualizationProperties[label]}
+                    onChange={handleChange(label)}
+                >
 
-                {values.map((v) => {
-                    return <MenuItem key={v} value={v}>
-                        {v}
-                    </MenuItem>
-                })}
-            </Select>
+                    {values.map((v) => {
+                        return <MenuItem key={v} value={v}>
+                            {v}
+                        </MenuItem>
+                    })}
+                </Select>
+            </div>
         </div>
     }
 
     const renderInput = (label, title, defaultValue) => {
         return <div className="flex">
-                <span style={{width: '276px'}}
-                      className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                  {title}
-                </span>
-            <input
-                type='text'
-                id={label}
-                className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                value={(!selectedProperties[label]) ? defaultValue : selectedProperties[label]}
-                onChange={handleChange(label)}
-            />
+                    <span style={{width: '25%'}}
+                          className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                {title}
+                    </span>
+            <div style={{width: '75%', paddingLeft: '2%'}}>
+                <input
+                    type='text'
+                    id={label}
+                    className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={(!selectedVisualizationProperties[label]) ? defaultValue : selectedVisualizationProperties[label]}
+                    onChange={handleChange(label)}
+                />
+            </div>
         </div>
     }
 
     const renderColorPicker = (label, title, defaultValue) => {
         return <div className="flex">
-                <span style={{width: '277px'}}
-                      className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                  {title}
-                </span>
+                    <span style={{width: '277px'}}
+                          className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                {title}
+                    </span>
             <ColorPicker style={{width: '100%'}}
                          defaultValue={defaultValue}
                          colorPalette={colorMap}
-                         value={(!selectedProperties[label]) ? defaultValue : selectedProperties[label]}
+                         value={(!selectedVisualizationProperties[label]) ? defaultValue : selectedVisualizationProperties[label]}
                          onChange={handleChangeColorPicker(label)}
             /></div>
     }
@@ -116,7 +143,7 @@ const EvaluationFormCNTs = ({iterations, eventHandlers, evaluationData}) => {
     if (alertIsSet)
         return (<div><Alert severity="error">{alertMessage}</Alert></div>)
 
-    if (isLoading)
+    if (isLoadingTestMethods || isLoadingTestConfig)
         return (<LoadingClip/>);
 
 
@@ -130,7 +157,7 @@ const EvaluationFormCNTs = ({iterations, eventHandlers, evaluationData}) => {
                     labelId="select-uniformity-challenges"
                     value={evaluationData.evaluationMethod}
                     onChange={(v) => {
-                        setIsLoading(true)
+                        setIsLoadingTestConfig(true)
                         eventHandlers.handleSelectEvaluationMethod(v)
                         fetchEvaluationConfig(v.target.value).catch((error) => {
                             console.log('Error while calling fetchEvaluationConfig: ' + error)
@@ -187,5 +214,5 @@ const EvaluationFormCNTs = ({iterations, eventHandlers, evaluationData}) => {
     );
 };
 
-export default EvaluationFormCNTs;
+export default GenericEvaluationForm;
 
