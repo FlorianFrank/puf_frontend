@@ -26,6 +26,7 @@ import VersionInfo from '../components/Utils/VersionInfo';
 import DeviceInfo from "../components/Devices/DeviceInfo";
 import WaferOverview from "../components/Evaluation/EvaluationResults/CNTs/WaferPlotter/WaferOverview";
 import AddDevice from "../components/Devices/AddDevice";
+import TestsStateWrapper from "../components/Tests/TestsStateWrapper";
 
 const Home = () => {
 
@@ -83,18 +84,9 @@ const Home = () => {
                         {/**TESTS */}
                         <Route path="/tests" element={<TestsPage/>}/>
                         <Route
-                            path="/waitingTests"
-                            element={<TestsStateView test_state='waiting'/>}
+                            path="/executionStatus"
+                            element={<TestsStateWrapper/>}
                         />
-                        <Route
-                            path="/runningTests"
-                            element={<TestsStateView test_state='running'/>}
-                        />
-                        <Route
-                            path="/completedTests"
-                            element={<TestsStateView test_state='finished'/>}
-                        />
-
 
                         {/**EVALUATION   */}
                         <Route

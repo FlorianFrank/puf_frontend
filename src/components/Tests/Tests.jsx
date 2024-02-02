@@ -50,7 +50,6 @@ const Tests = () => {
             setAlertMessage(value)
         }).then((data) => {
             if (data) {
-                console.log("CONFIGS ", data.configs)
                 setWaferConfig(data.configs)
                 setWaferConfigLoaded(true)
             }
@@ -151,7 +150,7 @@ const Tests = () => {
             /> : <Spinner message="Fetching tests"/>}
 
             {(templatesLoaded) ? <AddTestTypeLayout
-                color="#9bb2e06145a3"
+                color="#9bb2e0"
                 type="Script Tests"
                 elements={[[0, <TestLayout
                     color="#ffc107"
