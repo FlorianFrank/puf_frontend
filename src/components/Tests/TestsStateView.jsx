@@ -131,7 +131,7 @@ const TestsStateView = ({test_state, headerBgColor}) => {
                         'font-size': '20px',
                         'font-weight': 'bold',
                         'color': 'white'
-                    }}>{(test_state === 'waiting') ? "Waiting Tests" : ((test_state === 'running') ? "Running Tests" : "Completed Tests")}</h1>
+                    }}>{(test_state === 'waiting') ? "Waiting" : ((test_state === 'running') ? "Running" : "Completed")}</h1>
                     <TableContainer component={Paper}>
                         <StyledTable aria-label="collapsible table">
                             <TableHead>
