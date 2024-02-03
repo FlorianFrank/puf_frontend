@@ -16,10 +16,11 @@ import LoadingClip from "../Utils/LoadingClip";
 import {fetch_delete, fetch_get} from "../Utils/AuthenticationUtils";
 import {getStatusChipColor, useStylesResult} from "../Utils/StyledComponents";
 import {FETCH_RESULTS_INTERVAL} from "../../data/general_config";
+import {LinearProgress} from "@mui/material";
 
 const Results = () => {
     const [tasks, setTasks] = useState([]);
-    const [alertState, ] = useState(null)
+    const [alertState,] = useState(null)
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [alertIsSet, setAlertIsSet] = useState(false);
@@ -57,12 +58,21 @@ const Results = () => {
             setAlertMessage(value)
         }).then((retData) => {
             if (retData) {
-                navigate(`/metrics`, {
-                    state: {
-                        id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
-                        stopTime: formatDateTime(task.stopTime)
-                    },
-                });
+                if (task.evaluationType === 'rawFigure') {
+                    navigate(`/metrics/rawEvaluation`, {
+                        state: {
+                            id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
+                            stopTime: formatDateTime(task.stopTime)
+                        },
+                    });
+                } else if (task.evaluationType === 'waferVisualizer') {
+                    navigate(`/metrics/waferOverview`, {
+                        state: {
+                            id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
+                            stopTime: formatDateTime(task.stopTime)
+                        },
+                    });
+                }
             }
         })
     };
@@ -108,7 +118,6 @@ const Results = () => {
 
     return (
         <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
-            {(alertState) ? alertState : ''}
             <Header category="Evaluation" title="Results"/>
             <TableContainer>
                 <Table>
@@ -116,6 +125,7 @@ const Results = () => {
                         <TableRow>
                             <TableCell>ID</TableCell>
                             <TableCell>Title</TableCell>
+                            <TableCell>Type</TableCell>
                             <TableCell>Start Time</TableCell>
                             <TableCell>Finish Time</TableCell>
                             <TableCell>Status</TableCell>
@@ -128,21 +138,24 @@ const Results = () => {
                             <TableRow key={task.task_id} className={classes.tableRow}>
                                 <TableCell>{task.id}</TableCell>
                                 <TableCell>{task.title}</TableCell>
+                                <TableCell>{task.evaluationType}</TableCell>
                                 <TableCell>{formatDateTime(task.startTime)}</TableCell>
                                 <TableCell>{formatDateTime(task.stopTime)}</TableCell>
                                 <TableCell>
-                                    <Chip
-                                        label={task.status}
-                                        style={{
-                                            background: getStatusChipColor(task.status).background,
-                                            color: getStatusChipColor(task.status).color
-                                        }}
-                                        icon={
-                                            task.status === 'PENDING' ? (
-                                                <CircularProgress size={20}/>
-                                            ) : null
-                                        }
-                                    />
+                                    {(task.status === 'waiting') ?
+                                        <LinearProgress style={{width:'50%'}}/>:
+                                        <Chip
+                                            label={task.status}
+                                            style={{
+                                                background: getStatusChipColor(task.status).background,
+                                                color: getStatusChipColor(task.status).color
+                                            }}
+                                            icon={
+                                                task.status === 'PENDING' ? (
+                                                    <CircularProgress size={20}/>
+                                                ) : null
+                                            }
+                                        />}
                                 </TableCell>
                                 <TableCell>
                                     <Button
