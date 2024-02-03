@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 
 import FigurePlotter from "../../../Visualizer/FigurePlotter";
 import {
-    FETCH_CONNECTED_MEASUREMENTS,
+    FETCH_CONNECTED_CNT_MEASUREMENTS,
     FETCH_VISUALIZATION_RESULT
 } from "../../../../../config";
 import {Header} from "../../../../index";
@@ -23,23 +23,18 @@ import MeasurementTemplate from "./MeasurementTemplate";
 import RawEvaluationTable from "./RawEvaluationTable";
 import TestStatusTable from "../../TestStatusTable";
 import {StyledCard} from "../../../../Utils/StyledComponents";
-import WaferEvaluationTable from "./RawEvaluationTable";
 
-const WaferOverview = () => {
+const RawEvaluation = () => {
     let location = useLocation();
+
+    const {id, title, startTime, stopTime} = location.state || {};
+    const identifier = id || -1;
 
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-
-    const identifier = location.state?.id || -1;
-    const title = location.state?.title || {};
-    const startTime = location.state?.startTime || 'undefined';
-    const stopTime = location.state?.stopTime || 'undefined';
-
-    const [visualization, setVisualization] = useState({})
-    const [evaluationData, setEvaluationData] = useState([])
-    const [loading, setLoading] = useState(true)
-
+    const [visualization, setVisualization] = useState({});
+    const [evaluationData, setEvaluationData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [expandedStates, setExpandedStates] = useState({
         expanded: true,
         expandEvaluationTable: true
@@ -64,9 +59,9 @@ const WaferOverview = () => {
         })
     };
 
-    let requestConnectedMeasurements = async () => {
+    const requestConnectedMeasurements = async () => {
 
-        await fetch_get(FETCH_CONNECTED_MEASUREMENTS + identifier, (value) => {
+        await fetch_get(FETCH_CONNECTED_CNT_MEASUREMENTS + identifier, (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
@@ -128,15 +123,15 @@ const WaferOverview = () => {
                                              expanded: value
                                          })} expanded={expanded}/>
                 </CardContent>
-                {false && <CardContent>
+                <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
                         Evaluation Results
                     </Typography>
-                    <WaferEvaluationTable evaluationData={evaluationData} setExpanded={(value) => setExpandedStates({
+                    <RawEvaluationTable evaluationData={evaluationData} setExpanded={(value) => setExpandedStates({
                         ...expandedStates,
                         expandEvaluationTable: value
                     })} expanded={expandEvaluationTable}/>
-                </CardContent>}
+                </CardContent>
                 <CardContent>
                     <Typography variant="h6" color="text.secondary" style={{paddingBottom: '1%'}}>
                         Visualization
@@ -150,4 +145,4 @@ const WaferOverview = () => {
     );
 };
 
-export default WaferOverview;
+export default RawEvaluation;
