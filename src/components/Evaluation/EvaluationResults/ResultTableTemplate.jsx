@@ -4,9 +4,9 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import React from "react";
 import TableContainer from "@mui/material/TableContainer";
-import {StyledTableRow, StyledTableCell, StyledCheckbox} from "../../../../Utils/StyledComponents";
+import {StyledTableRow, StyledTableCell, StyledCheckbox} from "../../Utils/StyledComponents";
 
-const MeasurementTemplate = ({connectedMeasurements, setExpanded, expanded}) => {
+const ResultTableTemplate = ({headerElements, tableBodyList, keys, setExpanded, expanded}) => {
 
 
     const renderTableCell = (element, id) => (
@@ -18,8 +18,7 @@ const MeasurementTemplate = ({connectedMeasurements, setExpanded, expanded}) => 
         <Table sx={{width: '100%'}} aria-label="customized table">
             <TableHead>
                 <StyledTableRow>
-                    {['ID', 'Test Type', 'Test Name', 'Wafer', 'Row', 'Column', 'PUF ID', 'Row on PUF', 'Column on PUF', 'Temperature', 'Iterations', 'Selected Iteration']
-                        .map((header, index) => renderTableCell(header, index))}
+                    {headerElements.map((header, index) => renderTableCell(header, index))}
                     <StyledTableCell align="center" rowSpan={2}>
                         <StyledCheckbox
                             indeterminate={true}
@@ -32,11 +31,9 @@ const MeasurementTemplate = ({connectedMeasurements, setExpanded, expanded}) => 
                 </StyledTableRow>
             </TableHead>
             {expanded && (<TableBody>
-                {connectedMeasurements.map((measurement) => (<StyledTableRow>
+                {tableBodyList.map((elem) => (<StyledTableRow>
                     <React.Fragment>
-                        {['id', 'testType', 'testTitle', 'wafer', 'row', 'column', 'pufID', 'rowOnPUF', 'columnOnPUF', 'temperature', 'iterations', 'selectedIteration'].map((key, index) => {
-                            return renderTableCell(measurement[key], index)
-                        })}
+                        {keys.map((key, index) => renderTableCell(elem[key], index))}
                     </React.Fragment>
                 </StyledTableRow>))}
             </TableBody>)}
@@ -44,4 +41,4 @@ const MeasurementTemplate = ({connectedMeasurements, setExpanded, expanded}) => 
     </TableContainer>)
 }
 
-export default MeasurementTemplate;
+export default ResultTableTemplate;
