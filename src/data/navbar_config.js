@@ -92,28 +92,18 @@ export const links = [
         title: 'Tests',
         links: [
             {
-                name: 'Add New Test',
+                name: 'Add Template',
                 path: 'AddTest',
                 icon: <TbTruckLoading/>
             },
             {
-                name: 'tests',
+                name: 'Schedule',
                 path: 'tests',
                 icon: <TbTruckLoading/>
             },
             {
-                name: 'Waiting',
-                path: 'waitingTests',
-                icon: <TbTruckLoading/>
-            },
-            {
-                name: 'Running',
-                path: 'runningTests',
-                icon: <TbTruckLoading/>
-            },
-            {
-                name: 'Comleted',
-                path: 'completedTests',
+                name: 'Status',
+                path: 'executionStatus',
                 icon: <TbTruckLoading/>
             }
         ]
@@ -122,7 +112,7 @@ export const links = [
         title: 'Evaluation',
         links: [
             {
-                name: 'Evaluation',
+                name: 'Selection',
                 path: 'evaluation',
                 icon: <TbTruckLoading/>
             },
