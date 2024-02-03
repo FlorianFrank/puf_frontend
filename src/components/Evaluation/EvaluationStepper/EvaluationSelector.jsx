@@ -14,7 +14,7 @@ import {useStateContext} from "../../../contexts/ContextProvider";
 const EvaluationSelector = ({isStepWarning, evalType}) => {
     const styleClasses = useStyles();
 
-    const {selectedVisualizationProperties, setSelectedVisualizationProperties} = useStateContext();
+    const {selectedVisualizationProperties} = useStateContext();
 
 
     const [alertIsSet, setAlertIsSet] = useState(false);
@@ -59,13 +59,10 @@ const EvaluationSelector = ({isStepWarning, evalType}) => {
         setEvaluationData({...evaluationData, [event.target.name]: event.target.value});
     };
 
-    const handleChallengesChange = (event, type) => {
-        setEvaluationData({...evaluationData, [`${type}Challenges`]: event.target.value});
-    };
 
     const validateForm = () => {
-        const {title, uniformityChallenges, robustnessChallenges, uniquenessChallenges} = evaluationData;
-        setIsFormValid(title.trim() && uniformityChallenges.length > 0 && robustnessChallenges.length > 0 && uniquenessChallenges.length > 0);
+        const {title} = evaluationData;
+        setIsFormValid(title.trim());
     };
 
 
