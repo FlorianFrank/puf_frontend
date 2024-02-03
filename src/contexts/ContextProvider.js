@@ -33,6 +33,8 @@ export const ContextProvider = ({children}) => {
 
     const [testTemplates, setTestTemplates] = useState([]);
 
+    const [selectedVisualizationProperties, setSelectedVisualizationProperties] = useState({});
+
 
     const setMode = (e) => {
         setCurrentMode(e.target.value);
@@ -78,7 +80,9 @@ export const ContextProvider = ({children}) => {
                 waferConfig,
                 setWaferConfig,
                 setTestTemplates,
-                testTemplates
+                testTemplates,
+                selectedVisualizationProperties,
+                setSelectedVisualizationProperties
             }}
         >
             {children}

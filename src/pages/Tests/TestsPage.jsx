@@ -15,7 +15,7 @@ const TestsPage = () => {
                     <Route path="/" exact element={<Tests/>}/>
                     <Route path="/create-test" element={<AddTest/>}/>
                     <Route
-                        path="/test-detail/:testId"
+                        path="/testDetail"
                         element={<TestDetail/>}
                     />
                 </Routes>
