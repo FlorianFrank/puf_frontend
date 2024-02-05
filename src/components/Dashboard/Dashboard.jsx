@@ -46,17 +46,18 @@ const Dashboard = () => {
                 colspan: 3,
                 rowspan: 1
             }, {
-                id: 3,
-                widget: LoggingWidget(() => handleDelete(3), classes),
-                colspan: 3,
-                rowspan: 1
-            }],
-            [{
                 id: 4,
                 widget: TestExecutionTableWidget(() => handleDelete(4), classes),
-                colspan: 6,
+                colspan: 3,
                 rowspan: 1
-            }]
+            }], [
+                {
+                    id: 3,
+                    widget: LoggingWidget(() => handleDelete(3), classes),
+                    colspan: 6,
+                    rowspan: 1
+                }
+            ]
         ])
 
         const [anchorEl, setAnchorEl] = React.useState(null);

@@ -4,7 +4,6 @@ import DashboardWidget from "./DashboardWidget";
 import ServerPerformance from "./ServerPerformance";
 import DeviceTable from "../../Devices/DeviceTable";
 import Table from "./TableComponent";
-import mock from "../components/mock";
 import LoggingComponent from "./LoggingComponent";
 
 
@@ -59,7 +58,32 @@ export function TestExecutionTableWidget(handleDelete, classes) {
             handleDelete()
         }}
     >
-        <Table data={mock.table}/>
+        <Table data={[
+            {
+                id: 0,
+                title: "Sample",
+                type: "Transfer Characteristic",
+                device: "Keithley 2600",
+                iteration: 20,
+                status: "finished"
+            },
+            {
+                id: 0,
+                title: "Sample2",
+                type: "Output Characteristic",
+                device: "NanoSEC Testcontainer",
+                iteration: 20,
+                status: "finished"
+            },
+            {
+                id: 0,
+                title: "Sample",
+                type: "Transfer Characteristic",
+                device: "Keithley 2600",
+                iteration: 20,
+                status: "finished"
+            }
+        ]}/>
     </DashboardWidget>
 }
 
@@ -68,7 +92,8 @@ export function LoggingWidget(handleDelete, classes) {
         title="Logging"
         upperTitle
         noBodyPadding
-        bodyClass={classes.tableWidget}
+        bodyClass={classes.fullHeightBody}
+        className={classes.card}
         onDeleteHandler={() => {
             handleDelete()
         }}
