@@ -1,8 +1,9 @@
 import React, {Component, useEffect} from 'react';
-import {FETCH_ADD_TEST, FETCH_DEFAULT_VALUES} from '../../../config';
+import {FETCH_ADD_TEST, FETCH_DEFAULT_VALUES, FETCH_LIVE_PLOT_DATA, FETCH_START_EVALUATION} from '../../../config';
 import {toast} from "react-toastify";
 import {Header} from "../../index";
 import {useNavigate} from "react-router-dom";
+import {fetch_get, fetch_post} from "../../Utils/AuthenticationUtils";
 
 
 const NavigatorComponent = () => {
@@ -21,6 +22,8 @@ class AddTest extends Component {
 
 
         this.state = {
+            alertIsSet: false,
+            alertMessage: '',
             submitted: false,
             values: {
                 title: ''
@@ -38,14 +41,14 @@ class AddTest extends Component {
     async fetch_test_types(test_type) {
         try {
             console.log('Fetch default test template values for test class' + test_type)
-            const response = await fetch(FETCH_DEFAULT_VALUES + '?testClass=' + test_type);
+            fetch_get(FETCH_DEFAULT_VALUES + '?testClass=' + test_type, (value) => {
+                this.setState({'alertIsSet': value})
+            }, (value) => {
+                this.setState({'alertMessage': value})
+            }).then((retData) => {
+                this.setState({values: retData['default_values'], testTypes: retData['test_types']})
 
-            if (!response.ok) {
-                console.error('Error:', response.status);
-                return;
-            }
-            const responseData = await response.json();
-            this.setState({values: responseData['default_values'], testTypes: responseData['test_types']})
+            })
 
         } catch (error) {
             console.error('An unexpected error occurred:', error);
@@ -83,25 +86,16 @@ class AddTest extends Component {
 
                 const {values} = this.state;
 
-                const requestOptions = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(values),
-                };
+                await fetch_post(FETCH_ADD_TEST + '?testClass=' + pufType,
+                    (value) => this.setState({alertIsSet: value}),
+                    (value) => this.setState({alertMessage: value}), values).then((retData) => {
+                    if (retData) {
+                        console.log('Response Data:', retData);
+                        this.triggerAddTestToast(values)
+                        this.setState({submitted: true})
+                    }
+                });
 
-                const fetch_str = FETCH_ADD_TEST + '?testClass=' + pufType
-                const response = await fetch(fetch_str, requestOptions);
-
-                if (!response.ok) {
-                    console.error('Error:', response.status);
-                    return;
-                }
-                const responseData = await response.json();
-                console.log('Response Data:', responseData);
-                this.triggerAddTestToast(values)
-                this.setState({submitted: true})
             } else {
                 console.log('Input missing');
                 this.setState({fields: true});
@@ -183,7 +177,7 @@ class AddTest extends Component {
             <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-1 flex-col gap-3 lg:pl-3 mt-2 w-full">
                     {renderObj}
-                    {(this.state.submitted) ? <NavigatorComponent></NavigatorComponent> : ''}
+                    {(this.state.submitted) ? <NavigatorComponent/> : ''}
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ class AddCNTTest extends AddTest {
     }
 
     componentDidMount() {
-        this.fetch_test_types('cnt_fet').then((result) => {
+        this.fetch_test_types('cnt_puf').then((result) => {
             console.log(`fetch_test_types returned ${result}`)
         })
             .catch((error) => {
@@ -104,7 +104,7 @@ class AddCNTTest extends AddTest {
                 </div>
                 {
                     this.state.values['multipleIterationsChecked'] && (
-                        this.defineInputField('Iterations', this.state.values['nrIterations'], 'iterations', 'number')
+                        this.defineInputField('Iterations', this.state.values['nrIterations'], 'nrIterations', 'number')
                     )
                 }
 

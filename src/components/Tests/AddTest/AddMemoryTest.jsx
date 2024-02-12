@@ -57,11 +57,11 @@ class AddMemoryTest extends AddTest {
                 <div className="grid grid-cols-3 gap-4 my-8">
                     {(this.state.values['test_type'] === 'Write Latency' || this.state.values['test_type'] === 'Read Latency') ? this.defineInputField('Data Setup Time', this.state.values.dataSetupTime, 'dataSetupTime', 'number') : ''}
 
-                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Hammer value', this.state.values.hammerValue, 'hammerValue', 'number') : ''}
-                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Write iterations', this.state.values.hammerIterations, 'hammerIterations', 'number') : ''}
-                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Cell Offset', this.state.values.cellOffset, 'cellOffset', 'number') : ''}
+                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Hammer value', this.state.values['hammerValue'], 'hammerValue', 'number') : ''}
+                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Write iterations', this.state.values['hammerIterations'], 'hammerIterations', 'number') : ''}
+                    {(this.state.values['test_type'] === 'Row Hammering') ? this.defineInputField('Cell Offset', this.state.values['cellOffset'], 'cellOffset', 'number') : ''}
 
-                    {(this.state.values['test_type'] === 'DRAM Retention') ? this.defineInputField('Retention Time', this.state.values.retentionTime, 'retentionTime', 'number') : ''}
+                    {(this.state.values['test_type'] === 'DRAM Retention') ? this.defineInputField('Retention Time', this.state.values['retentionTime'], 'retentionTime', 'number') : ''}
                 </div>
 
 
@@ -85,11 +85,11 @@ class AddMemoryTest extends AddTest {
                 </div>
 
                 <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
-                    {this.defineCheckbox(this.state.values.multipleIterationsChecked, 'multipleIterationsChecked', 'Specify Number of iterations')}
+                    {this.defineCheckbox(this.state.values['multipleIterationsChecked'], 'multipleIterationsChecked', 'Specify Number of iterations')}
                 </div>
 
                 <div className="grid md:grid-cols-2 md:gap-6 mt-8">
-                    {this.state.values.multipleIterationsChecked && (
+                    {this.state.values['multipleIterationsChecked'] && (
                         this.defineInputField('Iterations', this.state.values.iterations, 'iterations', 'number')
                     )}
                 </div>
