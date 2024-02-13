@@ -9,7 +9,7 @@ import {
     ServerInfoWidget,
     DevicesWidget,
     TestExecutionTableWidget,
-    LoggingWidget
+    LoggingWidget, LivePlotWidget
 } from "./Widgets/DefaultWidgets";
 
 
@@ -46,14 +46,22 @@ const Dashboard = () => {
                 colspan: 3,
                 rowspan: 1
             }, {
-                id: 4,
-                widget: TestExecutionTableWidget(() => handleDelete(4), classes),
+                id: 3,
+                widget: TestExecutionTableWidget(() => handleDelete(3), classes),
                 colspan: 3,
                 rowspan: 1
             }], [
                 {
-                    id: 3,
-                    widget: LoggingWidget(() => handleDelete(3), classes),
+                    id: 4,
+                    widget: LoggingWidget(() => handleDelete(4), classes),
+                    colspan: 6,
+                    rowspan: 1
+                }
+            ],
+            [
+                {
+                    id: 5,
+                    widget: LivePlotWidget(() => handleDelete(5), classes),
                     colspan: 6,
                     rowspan: 1
                 }
