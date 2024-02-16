@@ -5,6 +5,7 @@ import ServerPerformance from "./ServerPerformance";
 import DeviceTable from "../../Devices/DeviceTable";
 import Table from "./TableComponent";
 import LoggingComponent from "./LoggingComponent";
+import LivePlotComponent from "./LivePlotComponent";
 
 
 export function ServerInfoWidget(handleDelete, classes) {
@@ -101,3 +102,20 @@ export function LoggingWidget(handleDelete, classes) {
         <LoggingComponent/>
     </DashboardWidget>
 }
+
+export function LivePlotWidget(handleDelete, classes) {
+    return <DashboardWidget
+        title="Live Plot"
+        upperTitle
+        noBodyPadding
+        bodyClass={classes.fullHeightBody}
+        className={classes.card}
+        onDeleteHandler={() => {
+            handleDelete()
+        }}
+    >
+        <LivePlotComponent/>
+    </DashboardWidget>
+}
+
+

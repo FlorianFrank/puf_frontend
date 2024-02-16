@@ -1,26 +1,42 @@
 import React, {useEffect, useState} from 'react'
 import Typography from "@mui/material/Typography";
 import {fetch_get} from "../../Utils/AuthenticationUtils";
-import {FETCH_LOG_MESSAGES} from "../../../config";
+import {FETCH_LOG_MESSAGES, FETCH_LOGGING_CATEGORIES} from "../../../config";
 import {Alert} from "@mui/lab";
 
 const LoggingComponent = () => {
 
     const [optionList, ] = useState([
-        {title: 'NATS Broker', label: 'nats_broker'},
-        {title: 'NATS Broker', label: 'nats_broker'},
-        {title: 'PUF Backend', label: 'puf_backend'}])
+        {title: 'all', label: 'ALL'},
+        {title: 'GenericMessagingServer', label: 'GenericMessagingServer'},
+        {title: 'DeviceManager', label: 'DeviceManager'},
+        {title: 'Dashboard', label: 'Dashboard'},
+        {title: 'Evaluation', label: 'Evaluation'}])
 
-    const [selectedOption, setSelectedOption] = useState('all')
+    const [selectedOption, setSelectedOption] = useState('ALL')
+    const [selectedLogLevel, setSelectedLogLevel] = useState('DEBUG')
 
+
+    const [loggingCategories, setLoggingCategories] = useState([])
     const [logMessages, setLogMessages] = useState([])
 
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
+    const fetchLoggingCategories = async () => {
+        await fetch_get(FETCH_LOGGING_CATEGORIES, (value) => {
+            setAlertIsSet(value)
+        }, (value) => {
+            setAlertMessage(value)
+        }).then((retData) => {
+            setLoggingCategories(retData['categories'])
+        })
+    };
 
-    const fetchLogMessages = async () => {
-        await fetch_get(FETCH_LOG_MESSAGES + '?filter=' + setSelectedOption, (value) => {
+
+    const fetchLogMessages = async (logCategory, logLevel) => {
+        await fetch_get(FETCH_LOG_MESSAGES + '?log_category=' + logCategory +'&log_type='+
+            logLevel+'&message_count=10', (value) => {
             setAlertIsSet(value)
         }, (value) => {
 
@@ -32,8 +48,12 @@ const LoggingComponent = () => {
     };
 
     useEffect(() => {
-        fetchLogMessages().catch(() => {
+        fetchLogMessages(selectedOption, selectedLogLevel).catch(() => {
             setAlertMessage('Error while calling fetchLogMessages')
+        })
+
+        fetchLoggingCategories().catch(() => {
+            setAlertMessage('Error while calling fetchLoggingCategories')
         })
     }, [])
 
@@ -63,12 +83,12 @@ const LoggingComponent = () => {
 
 
             if (match) {
-                const [, timestamp, component, fileName, lineNumber, logLevel, message] = match;
+                const [, timestamp, component, filename, lineNr, logLevel, message] = match;
                 ret.push(
                     <table>
                         <tr>
                             <td style={{color: 'darkgrey'}}><i>{timestamp}</i></td>
-                            <td style={{paddingLeft: '10px', color: 'darkgrey'}}>[{component}]</td>
+                            <td style={{paddingLeft: '10px', minWidth: '20vh', color: 'darkgrey'}}>[{component}]</td>
                             <td style={logLevelStyle(logLevel)}>{logLevel}:</td>
                             <td>{message}</td>
                         </tr>
@@ -92,15 +112,36 @@ const LoggingComponent = () => {
                 id="underline_select"
                 className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
                 value={selectedOption}
-                onChange={(event) => {setSelectedOption(event.target.value); console.log('TARGET', event.target.value)}}
+                onChange={(event) => {
+                    setSelectedOption(event.target.value);
+                    fetchLogMessages(event.target.value, selectedLogLevel);
+                }}
             >
                 <option selected>{selectedOption}</option>
-                {optionList.map((option) => (
-                    <option key={option.label} value={option.title}>
-                        {option.title}
+                {loggingCategories.map((option) => (
+                    <option key={option} value={option}>
+                        {option}
                     </option>
                 ))}
             </select>
+
+            <select
+                id="underline_select"
+                className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                value={selectedLogLevel}
+                onChange={(event) => {
+                    setSelectedLogLevel(event.target.value);
+                    fetchLogMessages(selectedOption, event.target.value);
+                }}
+            >
+                <option selected>{selectedLogLevel}</option>
+                {['DEBUG', 'INFO', 'WARNING', 'ERROR'].map((option) => (
+                    <option key={option} value={option}>
+                        {option}
+                    </option>
+                ))}
+            </select>
+
 
             <div style={{marginTop: 10}}>
                 <Typography variant="h7">Log Messages:</Typography>
