@@ -52,48 +52,63 @@ const Results = () => {
     }, []);
 
     const handleResultButtonClick = (task) => {
-        fetch_get(FETCH_EVALUATION_RESULT, (value) => {
-            setAlertIsSet(value)
-        }, (value) => {
-            setAlertMessage(value)
-        }).then((retData) => {
-            if (retData) {
-                if (task.evaluationType === 'rawFigure') {
-                    navigate(`/metrics/rawEvaluation`, {
-                        state: {
-                            id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
-                            stopTime: formatDateTime(task.stopTime)
-                        },
-                    });
-                } else if (task.evaluationType === 'waferVisualizer') {
-                    navigate(`/metrics/waferOverview`, {
-                        state: {
-                            id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
-                            stopTime: formatDateTime(task.stopTime)
-                        },
-                    });
-                }
-            }
-        })
-    };
+        if (task['evaluationType'] === 'rawFigure') {
+            navigate(`/metrics/rawEvaluation`, {
+                state: {
+                    id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
+                    stopTime: formatDateTime(task.stopTime)
+                },
+            });
+        } else if (task['evaluationType'] === 'waferVisualizer') {
+            navigate(`/metrics/waferOverview`, {
+                state: {
+                    id: task.id, title: task.title, startTime: formatDateTime(task.startTime),
+                    stopTime: formatDateTime(task.stopTime)
+                },
+            });
+        }
+    }
 
     const formatDateTime = (dateTime) => {
         return format(new Date(dateTime), 'yyyy-MM-dd HH:mm:ss'); // Format the date and time
     };
 
     const handleDownload = async (task) => {
-        fetch_get(FETCH_DOWNLOAD_RESULT, (value) => {
+        fetch_get(FETCH_DOWNLOAD_RESULT+ '?identifier=' + task.id +'&measurement_type='+task['evaluationType'], (value) => {
             setAlertIsSet(value)
         }, (value) => {
             setAlertMessage(value)
         }).then((retData) => {
             if (retData) {
+                // Use Blob constructor with { type: 'application/zip' } for a ZIP file
+                const decodedData = atob(retData);
+
+                // Convert the decoded string to a Uint8Array
+                const uint8Array = new Uint8Array(decodedData.length);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([uint8Array], { type: 'application/zip' });
+
+                // Create an object URL from the Blob
+                const blobUrl = URL.createObjectURL(blob);
+
+                // Create a link element
                 const element = document.createElement('a');
-                const file = new Blob([JSON.stringify(retData)], {type: 'text/json'});
-                element.href = URL.createObjectURL(file);
-                element.download = `${task.title}.json`;
-                document.body.appendChild(element); // Required for this to work in FireFox
+                element.href = blobUrl;
+                element.download = `${task.id}_${task.title}.zip`;
+
+                // Append the link to the document body
+                document.body.appendChild(element);
+
+                // Programmatically trigger a click on the link to start the download
                 element.click();
+
+                // Remove the link from the document after the download
+                document.body.removeChild(element);
+
+                // Release the object URL
+                URL.revokeObjectURL(blobUrl);
             }
         })
     };
@@ -143,7 +158,7 @@ const Results = () => {
                                 <TableCell>{formatDateTime(task.stopTime)}</TableCell>
                                 <TableCell>
                                     {(task.status === 'waiting') ?
-                                        <LinearProgress style={{width:'50%'}}/>:
+                                        <LinearProgress style={{width: '50%'}}/> :
                                         <Chip
                                             label={task.status}
                                             style={{
