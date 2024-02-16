@@ -31,3 +31,11 @@ export const triggerStartTestToast = (test) => {
         <div>Name: {test.title}</div>
     </div>);
 }
+
+export const triggerAddTestToast = (test) => {
+    toast.success(<div>
+        <div>Test template added:</div>
+        <div>Title: {test.title}</div>
+        <div>Type: {test.testType}</div>
+    </div>);
+}

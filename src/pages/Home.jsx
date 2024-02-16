@@ -11,7 +11,7 @@ import {
     EvaluationStepper,
     Results,
     Upload,
-    EvaluationsPage, RawEvaluation, TestDetail,
+    EvaluationsPage, RawEvaluation, TestDetail, AddTest,
 } from '../components';
 
 import {TestsPage, Overview} from './index';
@@ -19,9 +19,6 @@ import {TestsPage, Overview} from './index';
 import {useStateContext} from '../contexts/ContextProvider';
 import TestCategorySelector from '../components/Tests/AddTest/TestCategorySelector';
 import ScriptExecution from '../components/Tests/AddTest/ScriptExecution';
-import AddCNTTest from '../components/Tests/AddTest/AddCNTTest';
-import AddMemoryTest from '../components/Tests/AddTest/AddMemoryTest';
-import TestsStateView from '../components/Tests/TestsStateView';
 import VersionInfo from '../components/Utils/VersionInfo';
 import DeviceInfo from "../components/Devices/DeviceInfo";
 import WaferOverview from "../components/Evaluation/EvaluationResults/CNTs/WaferPlotter/WaferOverview";
@@ -74,9 +71,9 @@ const Home = () => {
                         <Route path="/overview" element={<Overview/>}/>
                         <Route path="/devices" element={<Devices/>}/>
                         <Route path="/addTest" element={<TestCategorySelector/>}/>
-                        <Route path="/addMemoryTest" element={<AddMemoryTest/>}/>
+                        <Route path="/addMemoryTest" element={<AddTest testType={'memory'} testTypeName={'Memory'}/>}/>
                         <Route path="/addScriptTest" element={<ScriptExecution/>}/>
-                        <Route path="/addCNTTest" element={<AddCNTTest/>}/>
+                        <Route path="/addCNTTest" element={<AddTest testType={'cnt_puf'} testTypeName={'Carbon Nanotubes'}/>}/>
                         <Route path="/versionInfo" element={<VersionInfo/>}/>
                         <Route path="/uploadMeasurments" element={<Upload/>}/>
                         <Route path="/deviceInfo" element={<DeviceInfo/>}/>
