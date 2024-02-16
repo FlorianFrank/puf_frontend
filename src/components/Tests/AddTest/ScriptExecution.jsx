@@ -6,12 +6,14 @@ import {fetch_post} from "../../Utils/AuthenticationUtils";
 import {FETCH_ADD_TEST} from "../../../config";
 import {triggerAddTestToast} from "../../Utils/ToastManager";
 import {Alert} from "@mui/lab";
+import LoadingClip from "../../Utils/LoadingClip";
 
 
 const ScriptExecution = ({options}) => {
-    const [values, setValues] = useState({ script: getCode() });
+    const [values, setValues] = useState('');
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     const getCode = (e) => {
@@ -27,6 +29,7 @@ const ScriptExecution = ({options}) => {
 
     useEffect(() => {
         setValues({script: getCode()})
+        setIsLoading(false)
     }, [])
 
     const handleChange = (name) => (event) => {
@@ -75,8 +78,12 @@ const ScriptExecution = ({options}) => {
         editor.focus();
     }
 
+
     if (alertIsSet)
         return <Alert severity="error">{alertMessage}</Alert>
+
+    if (isLoading)
+        return (<LoadingClip/>);
 
     return returnRenderObject(
         <form onSubmit={(event) => handleSubmit(event)}>
