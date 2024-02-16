@@ -1,62 +1,81 @@
-import React, {Component, useEffect} from 'react';
-import {FETCH_ADD_TEST, FETCH_DEFAULT_VALUES, FETCH_LIVE_PLOT_DATA, FETCH_START_EVALUATION} from '../../../config';
-import {toast} from "react-toastify";
-import {Header} from "../../index";
-import {useNavigate} from "react-router-dom";
-import {fetch_get, fetch_post} from "../../Utils/AuthenticationUtils";
+import React, {useEffect, useState} from 'react';
+import {FETCH_ADD_TEST, FETCH_DEFAULT_VALUES} from '../../../config';
+import {toast} from 'react-toastify';
+import {Header} from '../../index';
+import {useNavigate} from 'react-router-dom';
+import {fetch_get, fetch_post} from '../../Utils/AuthenticationUtils';
+import Tooltip from '@mui/material/Tooltip';
+import {Typography} from '@material-ui/core';
+import {Alert} from '@mui/lab';
+import LoadingClip from '../../Utils/LoadingClip';
 
+const AddTest = ({testType, testTypeName}) => {
 
-const NavigatorComponent = () => {
     const navigate = useNavigate();
 
+    const [isLoading, setIsLoading] = useState(true)
+    const [alertIsSet, setAlertIsSet] = useState(false)
+    const [alertMessage, setAlertMessage] = useState('')
+    const [values, setValues] = useState({
+        title: '',
+        testType: (testType === 'cnt_puf') ? 'transferChar' : (testType === 'memory') ? 'rowHammering' : ''
+    })
+    const [, setErrors] = useState({})
+    const [testTypes, setTestTypes] = useState([])
+    const [input_groups, setInput_groups] = useState([])
+    const [, setFields] = useState(false)
+
+
     useEffect(() => {
-        navigate('/tests')
-    }, []);
+        fetchTestTypes(testType, values.testType).then((result) => {
+            console.log(`fetch_test_types returned ${result}`)
+        })
+            .catch((error) => {
+                console.error(`fetch_test_types returned ${error}`)
+            });
+    }, [])
 
-    return ''
-}
+    const fetchTestTypes = async (testClass, testType) => {
+        if (testClass.length > 0) {
+            try {
+                console.log('Fetch default test template values for test class ' + testClass)
+                fetch_get(FETCH_DEFAULT_VALUES + '?testClass=' + testClass + '&testSubclass=' + testType, (value) =>
+                    setAlertIsSet(value), (value) => setAlertMessage(value)).then((retData) => {
 
-class AddTest extends Component {
-    constructor(props) {
-        super(props);
+                    const defaultValueList = {testType: testType}
 
+                    retData['input_fields'][testType]['groups'].forEach((group) => {
+                        group['fields'].forEach((field) => {
+                            if (field['type'] === 'input')
+                                defaultValueList[field['label']] = field['default']
+                            if (field['type'] === 'checkbox') {
+                                defaultValueList[field['label']] = (field['default'] === 'true')
+                            }
+                        })
+                    })
 
-        this.state = {
-            alertIsSet: false,
-            alertMessage: '',
-            submitted: false,
-            values: {
-                title: ''
-            },
-            errors: {},
-            testTypes: [],
-            loading: false,
-            fields: false,
-            selectedOption: '',
-        }
+                    setIsLoading(false)
+                    setValues(defaultValueList)
+                    setTestTypes(retData['test_types'])
+                    setInput_groups(retData['input_fields'])
+                })
 
-    }
-
-
-    async fetch_test_types(test_type) {
-        try {
-            console.log('Fetch default test template values for test class' + test_type)
-            fetch_get(FETCH_DEFAULT_VALUES + '?testClass=' + test_type, (value) => {
-                this.setState({'alertIsSet': value})
-            }, (value) => {
-                this.setState({'alertMessage': value})
-            }).then((retData) => {
-                this.setState({values: retData['default_values'], testTypes: retData['test_types']})
-
-            })
-
-        } catch (error) {
-            console.error('An unexpected error occurred:', error);
+            } catch (error) {
+                console.error('An unexpected error occurred:', error);
+            }
+        } else {
+            console.log('Length of test type is 0')
         }
     }
 
+    const validate = () => {
+        let newErrors = {};
+        newErrors.title = values.title ? '' : 'This field is required.';
+        setErrors(newErrors)
+        return Object.values(newErrors).every((x) => x === '');
+    };
 
-    triggerAddTestToast = (test) => {
+    const triggerAddTestToast = (test) => {
         toast.success(<div>
             <div>Test template added:</div>
             <div>Title: {test.title}</div>
@@ -64,74 +83,61 @@ class AddTest extends Component {
         </div>);
     }
 
-    validate = () => {
-        return true
-    }
-
-    handleNavigate() {
-        return this.render()
-        // Check if this.props is defined before accessing navigate
-
-    };
-
-    handleSubmit = async (pufType, event) => {
-
+    const handleSubmit = async (pufType, event) => {
         event.preventDefault();
-
         try {
-            console.log('Save Test');
-
-            if (this.validate()) {
+            if (validate()) {
                 console.log('Send Post Request:');
 
-                const {values} = this.state;
-
                 await fetch_post(FETCH_ADD_TEST + '?testClass=' + pufType,
-                    (value) => this.setState({alertIsSet: value}),
-                    (value) => this.setState({alertMessage: value}), values).then((retData) => {
+                    (value) => setAlertIsSet(value),
+                    (value) => setAlertMessage(value),
+                    values).then((retData) => {
                     if (retData) {
                         console.log('Response Data:', retData);
-                        this.triggerAddTestToast(values)
-                        this.setState({submitted: true})
+                        triggerAddTestToast(values)
+                        navigate('/tests')
                     }
                 });
-
             } else {
                 console.log('Input missing');
-                this.setState({fields: true});
+                setFields(true)
             }
         } catch (error) {
             console.error('An unexpected error occurred:', error);
         }
     };
 
-
-    handleChange = (name) => (event) => {
+    const handleChange = (name) => (event) => {
         console.log('🚀 ~ handleChange ~ event:', name, event.target.value);
-        this.setState({values: {...this.state.values, [name]: event.target.value}});
+        setValues({...values, [name]: event.target.value})
     };
 
-    handleChangeChecked = (name) => (event) => {
-        this.setState({values: {...this.state.values, [name]: event.target.checked}})
+    const handleChangeChecked = (name) => (event) => {
+        console.log('🚀 ~ handleChangeChecked ~ event:', name, event.target.value);
+        setValues({...values, [name]: event.target.checked})
     };
 
-    defineInputField(label, value, value_name, type) {
+    const defineInputField = (label, value, value_name, type) => {
         return <div className="flex">
-                <span
-                    className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+            <Tooltip title="Delete">
+            <span style={{width: '30%'}}
+                  className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                   {label}
                 </span>
+            </Tooltip>
             <input
                 type={type}
                 id="website-admin"
                 className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={value}
-                onChange={this.handleChange(value_name)}
+                onChange={handleChange(value_name)}
             />
         </div>
     }
 
-    defineSelectField(retValueName, optionList) {
+
+    const defineSelectField = (value, onChange, optionList) => {
         return <div className="relative z-0 w-full mb-6 group">
             <label htmlFor="underline_select" className="sr-only">
                 Underline select
@@ -139,12 +145,12 @@ class AddTest extends Component {
             <select
                 id="underline_select"
                 className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                value={this.state.values[retValueName]}
-                onChange={this.handleChange(retValueName)}
+                value={value}
+                onChange={onChange}
             >
                 <option selected>Select a test type</option>
                 {optionList.map((testType) => (
-                    <option key={testType.name} value={testType.name}>
+                    <option key={testType.field} value={testType.field}>
                         {testType.name}
                     </option>
                 ))}
@@ -152,7 +158,7 @@ class AddTest extends Component {
         </div>
     }
 
-    defineCheckbox(checkedValue, checkedValueName, title) {
+    const defineCheckbox = (checkedValue, checkedValueName, title) => {
         return <div className="flex items-center">
             <input
                 id="bordered-checkbox-1"
@@ -160,8 +166,8 @@ class AddTest extends Component {
                 value=""
                 name="bordered-checkbox"
                 className="w-4 h-4 text-blue-600 bg-gray-100"
-                checked={checkedValue}
-                onChange={this.handleChangeChecked(checkedValueName)}
+                checked={values[checkedValueName]}
+                onChange={handleChangeChecked(checkedValueName)}
             />
             <label
                 className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -171,17 +177,81 @@ class AddTest extends Component {
         </div>
     }
 
-    returnRenderObject(renderObj, testType) {
+    const returnRenderObject = (renderObj, testType) => {
         return <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
             <Header category="Tests" title={"Add " + testType + " Test"}/>
             <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-1 flex-col gap-3 lg:pl-3 mt-2 w-full">
                     {renderObj}
-                    {(this.state.submitted) ? <NavigatorComponent/> : ''}
                 </div>
             </div>
         </div>
     }
+
+    if (alertIsSet)
+        return <Alert severity="error">{alertMessage}</Alert>
+    if (isLoading)
+        return <LoadingClip/>
+
+    return returnRenderObject(
+        <form onSubmit={(event) => {
+            handleSubmit(testType, event).catch((errorMsg) => {
+                console.log('Error while calling handleSubmit: ', errorMsg)
+            })
+        }}>
+            <div className="relative z-0 w-full mb-6 group">
+                <input
+                    type="text"
+                    name="floating_Title"
+                    id="floating_Title"
+                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder="Title"
+                    onChange={handleChange('title')}
+                    required
+                />
+                <label
+                    htmlFor="floating_Title"
+                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                </label>
+            </div>
+            <div className="grid md:grid-cols-2 md:gap-6">
+                {defineSelectField(values["testType"], (event) => {
+                    fetchTestTypes(testType, event.target.value).catch((error) => {
+                        console.error("Error while calling fetch_test_types ", error)
+                    })
+                }, testTypes)}
+            </div>
+
+            {input_groups[values.testType]['groups'].map((group) => {
+                return <React.Fragment>
+                    <Typography variant="h5" color="textSecondary" noWrap style={{marginLeft: '10px'}}>
+                        {group['name']}
+                    </Typography>
+                    <div className="grid grid-cols-4 gap-4 my-8">
+                        {group['fields'].map((field) => {
+                            if (field['type'] === 'input')
+                                return defineInputField(field['name'], values[field['label']], field['label'], field['type'])
+                            if (field['type'] === 'select')
+                                return defineSelectField(values[field['label']], () => {
+                                    // TODO currently unimplemented
+                                }, field['options'])
+                            if (field['type'] === 'checkbox')
+                                return defineCheckbox(values[field['label']], field['label'], field['name'])
+                            else
+                                return <div><Alert severity="error">{field['type'] + ' undefined'}</Alert></div>
+                        })}
+                    </div>
+                </React.Fragment>
+            })}
+            <button
+                type="submit"
+                className="bg-black text-white font-bold p-2 rounded-full w-28 outline-none"
+            >
+                Save
+            </button>
+        </form>, testTypeName
+    )
 
 }
 
