@@ -1,13 +1,15 @@
 // Fetch the VM IP address dynamically.
-const VM_IP_ADDRESS = window.location.hostname;
 export const BACKEND_IP_ADDRESS = '127.0.0.1'//'132.231.14.120'
 export const BACKEND_IP_PORT = 8000
 export const BACKEND_BASE_URL = 'http://' + BACKEND_IP_ADDRESS + ':' + BACKEND_IP_PORT
 
 // NATS
-export const FETCH_SERVER_INFO = BACKEND_BASE_URL + '/serverinfo/get_info/'
-export const FETCH_SERVER_PERFORMANCE = BACKEND_BASE_URL + '/serverinfo/get_performance_info/'
+export const FETCH_SERVER_INFO = BACKEND_BASE_URL + '/dashboard/get_server_info/'
+export const FETCH_SERVER_PERFORMANCE = BACKEND_BASE_URL + '/dashboard/get_server_performance_info/'
 export const FETCH_START_NATS = BACKEND_BASE_URL + '/nats/start/'
+export const FETCH_LIVE_PLOT_DATA = BACKEND_BASE_URL + '/nats/live_plot/'
+export const FETCH_LIVE_PLOT_PROPERTIES = BACKEND_BASE_URL + '/nats/live_plot_properties/'
+
 
 // Authentication
 export const FETCH_REQUEST_TOKEN = BACKEND_BASE_URL + '/token/'
@@ -27,8 +29,8 @@ export const FETCH_DEFAULT_VALUES = BACKEND_BASE_URL + '/tests/get_default_value
 export const FETCH_TEST_TEMPLATES = BACKEND_BASE_URL + '/tests/get_tests/'
 export const FETCH_UPLOADED_TESTS = BACKEND_BASE_URL +'/tests/get_uploaded/?type='
 export const FETCH_TEST_STATE = BACKEND_BASE_URL + '/nats/get_test_status/?filter='
-export const FETCH_DOWNLOAD_RESULT = BACKEND_BASE_URL + '/evaluation/download_result/?identifier='
-export const FETCH_DELETE_CNT_TEST_TEMPLATE = BACKEND_BASE_URL + '/tests/delete_test/?testType=CNTTest&id='
+export const FETCH_DOWNLOAD_RESULT = BACKEND_BASE_URL + '/evaluation/get_result_zip/'
+export const FETCH_DELETE_CNT_TEST_TEMPLATE = BACKEND_BASE_URL + '/tests/delete_test/?testType=cnt_puf&id='
 export const FETCH_DELETE_MEMORY_TEST_TEMPLATE = BACKEND_BASE_URL + '/tests/delete_test/?testType=memory&id='
 
 
@@ -48,3 +50,8 @@ export const FETCH_EVALUATION_TYPES = BACKEND_BASE_URL + '/evaluation/get_evalua
 
 // Carbon NanoTubes
 export const FETCH_WAFER_CONFIG = BACKEND_BASE_URL + '/devices/get_wafer_configs/'
+
+// Logging
+export const FETCH_LOG_MESSAGES = BACKEND_BASE_URL  + '/dashboard/get_log_messages/'
+export const FETCH_LOGGING_CATEGORIES = BACKEND_BASE_URL  + '/dashboard/get_log_categories/'
+
