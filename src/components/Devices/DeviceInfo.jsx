@@ -32,7 +32,7 @@ const DeviceStatus = ({state}) => {
 
 function selectDeviceFigure(deviceIdentifier) {
     switch (deviceIdentifier) {
-        case 'Keithley 2636B':
+        case 'Keithley 2636B SMU':
             return smu_keithley_2600b;
         case 'NanoSec Switchmatrix':
             return nanosec_matrix;
