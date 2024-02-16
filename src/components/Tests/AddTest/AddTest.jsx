@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {FETCH_ADD_TEST, FETCH_DEFAULT_VALUES} from '../../../config';
-import {toast} from 'react-toastify';
 import {Header} from '../../index';
 import {useNavigate} from 'react-router-dom';
 import {fetch_get, fetch_post} from '../../Utils/AuthenticationUtils';
@@ -8,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import {Typography} from '@material-ui/core';
 import {Alert} from '@mui/lab';
 import LoadingClip from '../../Utils/LoadingClip';
+import {triggerAddTestToast} from "../../Utils/ToastManager";
 
 const AddTest = ({testType, testTypeName}) => {
 
@@ -74,14 +74,6 @@ const AddTest = ({testType, testTypeName}) => {
         setErrors(newErrors)
         return Object.values(newErrors).every((x) => x === '');
     };
-
-    const triggerAddTestToast = (test) => {
-        toast.success(<div>
-            <div>Test template added:</div>
-            <div>Title: {test.title}</div>
-            <div>Type: {test.testType}</div>
-        </div>);
-    }
 
     const handleSubmit = async (pufType, event) => {
         event.preventDefault();
