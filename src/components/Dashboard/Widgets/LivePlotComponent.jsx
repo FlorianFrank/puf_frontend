@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import ApexCharts from 'react-apexcharts';
+import Chart from 'react-apexcharts';
+import ApexCharts from "apexcharts";
+
 import {fetch_get} from "../../Utils/AuthenticationUtils";
 import {FETCH_LIVE_PLOT_DATA, FETCH_LIVE_PLOT_PROPERTIES} from "../../../config";
 import {Alert} from "@mui/lab";
@@ -19,16 +21,16 @@ const LivePlotComponent = () => {
     const [chartPropsSet, setChartPropsSet] = useState(false);
     const [alertIsSet, setAlertIsSet] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-    const [series, setSeries] = useState([]);
+    const [series, updateSeries] = useState([]);
     const [options, setOptions] = useState({
         chart: {
             id: 'realtime', height: 350,
             type: 'line',
             animations: {
                 enabled: true,
-                easing: 'linear',
+                easing: "linear",
                 dynamicAnimation: {
-                    speed: 1000
+                    speed: 500
                 }
             },
             toolbar: {
@@ -76,7 +78,7 @@ const LivePlotComponent = () => {
             setAlertMessage(value)
         }).then((retData) => {
             if (retData) {
-                setSeries(retData['dataLabels'].map((label) => {
+                updateSeries(retData['dataLabels'].map((label) => {
                         return {name: label, data: []}
                     }
                 ))
@@ -85,7 +87,8 @@ const LivePlotComponent = () => {
                     yaxis: retData['yaxis'],
                     title: retData['title'],
                     legend: retData['legend'],
-                    stroke: retData['stroke']
+                    stroke: retData['stroke'],
+                    chart: { animations: retData['animations']}
                 })
                 setChartPropsSet(true)
             } else {
@@ -111,6 +114,11 @@ const LivePlotComponent = () => {
     }, [chartPropsSet])
 
 
+    useEffect(() => {
+        // Update series and trigger ApexCharts update when component mounts or series changes
+        ApexCharts.exec('realtime', 'updateSeries', series);
+    }, [series]);
+
     const getNewSeries = () => {
 
         fetch_get(FETCH_LIVE_PLOT_DATA, (value) => {
@@ -134,7 +142,7 @@ const LivePlotComponent = () => {
                         lastDate = newDate
                     })
                 })
-                setSeries(prevSeries => (
+                updateSeries(prevSeries => (
                     prevSeries.map((elem, idx) => ({
                         data: [
                             ...prevSeries[idx].data.slice(-max_nr_points),
@@ -168,7 +176,7 @@ const LivePlotComponent = () => {
 
             </select>
             <div id="chart">
-                <ApexCharts options={options} series={series} type="line" height={350}/>
+                <Chart options={options} series={series} type="line" height={350}/>
             </div>
             <div id="html-dist"/>
         </div>

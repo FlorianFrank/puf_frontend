@@ -60,6 +60,7 @@ const Device = ({id, name, type, protocol, port, status, idn, additional}) => {
                 onClick={() => navigate('/deviceInfo', {
                     state: {
                         title: name,
+                        type: type,
                         deviceDict: [{'key': 'Type', 'value': deviceTypeJsonToStr(type)},
                             {'key': 'Protocol', 'value': deviceProtocolJsonToStr(protocol)},
                             {'key': 'Port', 'value': port},

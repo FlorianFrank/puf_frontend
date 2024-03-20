@@ -8,8 +8,19 @@ import {Typography} from '@material-ui/core';
 import {Alert} from '@mui/lab';
 import LoadingClip from '../../Utils/LoadingClip';
 import {triggerAddTestToast} from "../../Utils/ToastManager";
+import {makeStyles} from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+    customTooltip: {
+        fontSize: '50px',
+    },
+}));
+
 
 const AddTest = ({testType, testTypeName}) => {
+
+    const classes = useStyles();
 
     const navigate = useNavigate();
 
@@ -110,9 +121,9 @@ const AddTest = ({testType, testTypeName}) => {
         setValues({...values, [name]: event.target.checked})
     };
 
-    const defineInputField = (label, value, value_name, type) => {
+    const defineInputField = (label, value, value_name, type, tooltip) => {
         return <div className="flex">
-            <Tooltip title="Delete">
+            <Tooltip title={tooltip} classes={{tooltip: classes.customTooltip}}>
             <span style={{width: '30%'}}
                   className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                   {label}
@@ -223,7 +234,7 @@ const AddTest = ({testType, testTypeName}) => {
                     <div className="grid grid-cols-4 gap-4 my-8">
                         {group['fields'].map((field) => {
                             if (field['type'] === 'input')
-                                return defineInputField(field['name'], values[field['label']], field['label'], field['type'])
+                                return defineInputField(field['name'], values[field['label']], field['label'], field['type'], field['tooltip'])
                             if (field['type'] === 'select')
                                 return defineSelectField(values[field['label']], () => {
                                     // TODO currently unimplemented

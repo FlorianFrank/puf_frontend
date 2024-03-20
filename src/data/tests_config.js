@@ -1,16 +1,12 @@
-// TODO MOVE TO DATABASE
-export const wafers = [
-    1, 2, 3
-]
-
 export const pufIDs = [
     11, 12, 13, 21, 22, 23, 31, 32, 33
 ]
 
+// TODO sollte entfernt werden
 export const testClasses = {
-    'Memory Test': '/addMemoryTest',
-    'Script Test': '/addScriptTest',
-    'Visual Programming Test': '/addGraphicalTest',
-    'Carbon Nanotube Test': '/addCNTTest',
-    'Memristor Test': '/addMemristorTest',
+    'Memory Tests': '/addMemoryTest',
+    'Script Tests': '/addScriptTest',
+    'Visual Programming Tests': '/addGraphicalTest',
+    'Carbon Nanotube Tests': '/addCNTTest',
+    'Memristor Tests': '/addMemristorTest',
 }
