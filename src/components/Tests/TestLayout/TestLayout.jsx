@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { styled } from "@mui/material/styles";
+import React, {useEffect, useState} from 'react';
+import {useStateContext} from "../../../contexts/ContextProvider";
+import {styled} from "@mui/material/styles";
 import {
     TableHead, Table, Chip, Stack,
     TableContainer, Paper, TableRow,
@@ -8,20 +8,21 @@ import {
 } from "@mui/material";
 import RowCNTTestTemplate from "./RowCNTTestTemplate";
 import RowMemoryTestTemplate from "./RowMemoryTestTemplate";
+import RowGenericTestTemplate from "./RowGenericTestTemplate";
 
-const TestLayout = ({ color, category, type }) => {
-    const { testTemplates } = useStateContext();
+const TestLayout = ({color, category, type}) => {
+    const {testTemplates} = useStateContext();
     const [tests, setTests] = useState([]);
 
     useEffect(() => {
         setTests(testTemplates.filter(t => t['testType'] === type));
     }, [testTemplates, type]);
 
-    const StyledTableHead = styled(TableHead)(({ _theme }) => ({
+    const StyledTableHead = styled(TableHead)(({_theme}) => ({
         backgroundColor: color
     }));
 
-    const StyledTable = styled(Table)(({ _theme }) => ({
+    const StyledTable = styled(Table)(({_theme}) => ({
         '&:last-child td, &:last-child th': {
             border: 0
         },
@@ -29,26 +30,26 @@ const TestLayout = ({ color, category, type }) => {
         marginTop: '5px'
     }));
 
-    const StyledChip1 = styled(Chip)(({ _theme }) => ({
+    const StyledChip1 = styled(Chip)(({_theme}) => ({
         borderColor: color
     }));
 
-    const StyledChip2 = styled(Chip)(({ _theme }) => ({
+    const StyledChip2 = styled(Chip)(({_theme}) => ({
         backgroundColor: color
     }));
 
     return (
         <React.Fragment>
             <Stack direction="row" spacing={1}>
-                <StyledChip1 label={tests.length} variant="outlined" />
-                <StyledChip2 label={type} />
+                <StyledChip1 label={tests.length} variant="outlined"/>
+                <StyledChip2 label={type}/>
             </Stack>
             {tests.length !== 0 ? (
                 <TableContainer component={Paper}>
                     <StyledTable aria-label="collapsible table">
                         <StyledTableHead>
                             <TableRow>
-                                <TableCell />
+                                <TableCell/>
                                 <TableCell align="left">Title</TableCell>
                                 <TableCell align="left">Test Type</TableCell>
                                 <TableCell align="left">Actions</TableCell>
@@ -57,8 +58,7 @@ const TestLayout = ({ color, category, type }) => {
 
                         <TableBody>
                             {tests.map((test) => (
-                                (category === 'cntpufs' && <RowCNTTestTemplate key={test.id} row={test} />) ||
-                                (category === 'memory' && <RowMemoryTestTemplate key={test.id} row={test} />)
+                                <RowGenericTestTemplate key={test.id} row={test}/>
                             ))}
                         </TableBody>
                     </StyledTable>

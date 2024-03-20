@@ -110,16 +110,16 @@ const Tests = () => {
                     elements={[[0, <TestLayout
                         color="#ffc107"
                         type="Transfer Characteristic"
-                        category='cntpufs'
+                        category='cnt_puf'
                     />],
                         [1, <TestLayout
                             color="#ffc107"
                             type="Output Characteristic"
-                            category='cntpufs'
+                            category='cnt_puf'
                         />], [2, <TestLayout
                             color="#ffc107"
                             type="Gate Current"
-                            category='cntpufs'
+                            category='cnt_puf'
                         />]
                     ]}
                 /> : <Spinner message="Fetching tests"/>}
