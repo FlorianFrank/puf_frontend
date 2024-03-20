@@ -7,7 +7,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
 import {Header} from '../index';
 import {Alert} from "@mui/lab";
 import {FETCH_TEST_STATE} from "../../config";
@@ -18,6 +17,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Card from "@mui/material/Card";
 import {Stack} from "@mui/material";
+import LinearProgressWithLabel from "../Utils/LinearProgressWithLabel";
 
 const TestsStateView = ({test_state, headerBgColor}) => {
     const [alertState, setAlertState] = useState(null);
@@ -32,9 +32,15 @@ const TestsStateView = ({test_state, headerBgColor}) => {
     const [alertMessage, setAlertMessage] = useState('');
 
     useEffect(() => {
-        requestTestState('waiting')
-        requestTestState('running')
-        requestTestState('finished')
+        const interval = window.setInterval(
+            () => {
+                requestTestState('waiting')
+                requestTestState('running')
+                requestTestState('finished')
+            }
+            , 1000);
+
+        return () => clearInterval(interval)
     }, []);
 
     function requestTestState(testState) {
@@ -140,6 +146,8 @@ const TestsStateView = ({test_state, headerBgColor}) => {
                                     <StyledTableCell align="left">Title</StyledTableCell>
                                     <StyledTableCell align="left">Type</StyledTableCell>
                                     <StyledTableCell align="left">Device</StyledTableCell>
+                                    {(test_state === 'running') &&
+                                        <StyledTableCell align="left">Progress</StyledTableCell>}
                                     <StyledTableCell align="left">Iteration</StyledTableCell>
                                     <StyledTableCell align="left">Status</StyledTableCell>
                                 </TableRow>
@@ -162,6 +170,9 @@ const TestsStateView = ({test_state, headerBgColor}) => {
                                         <StyledTableCell align="left">
                                             {row.device}
                                         </StyledTableCell>
+                                        {(test_state === 'running') && <StyledTableCell align="left">
+                                            {<LinearProgressWithLabel value={row['progress']}/>}
+                                        </StyledTableCell>}
                                         <StyledTableCell align="left">
                                             {row.iteration}
                                         </StyledTableCell>
