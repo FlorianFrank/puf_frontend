@@ -12,6 +12,7 @@ const widgetTitles = [
     'Logging Widget',
     'Test Execution Table Widget',
     'Devices Widget',
+    'Live Plot Widget'
 ];
 
 export default function AddWidgetMenu({anchorEl, open, handleClose, addWidget}) {

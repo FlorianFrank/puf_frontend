@@ -117,6 +117,13 @@ const Dashboard = () => {
                     colspan: colspan,
                     rowspan: 1
                 }
+            } else if (title  === 'Live Plot Widget') {
+                widget = {
+                    id: widgetIDCtr,
+                    widget: LivePlotWidget(() => handleDelete(widgetIDCtr), classes),
+                    colspan: colspan,
+                    rowspan: 1
+                }
             }
             if (widget) {
                 let bk = widgetList;
@@ -147,10 +154,11 @@ const Dashboard = () => {
                     />
 
                     <Grid container spacing={4}>
+                        {/*TODO*/}
                         {widgetList.map((widgetRow, rowIndex) => (
                             <React.Fragment key={rowIndex}>
                                 {widgetRow.map((element, colIndex) => (
-                                    <Grid item key={colIndex} lg={element['colspan'] * 2} md={3} sm={6} xs={12}>
+                                    <Grid item key={colIndex}  xs={element['colspan'] * 2}>
                                         {element.widget}
                                     </Grid>
                                 ))}
