@@ -107,13 +107,13 @@ const EvaluationsPage = () => {
                                 className="bg-black text-white font-bold p-2 rounded-full w-28 outline-none"
                                 // TODO make dynamic
                                 onClick={() => {
-                                    if (values.testType === 'Memory Test')
+                                    if (values.testType === 'Memory Tests')
                                         navigate('/evaluation/memory');
                                     else if (values.testType === 'Script Test')
                                         navigate('/evaluation/cnt_fets');
                                     else if (values.testType === 'Visual Programming Test')
                                         navigate('/addGraphicalTest');
-                                    else if (values.testType === 'Carbon Nanotube Test')
+                                    else if (values.testType === 'Carbon Nanotube Tests')
                                         navigate('/evaluation/cnt_fets');
                                     else if (values.testType === 'Memristor Test')
                                         navigate('/evaluate');
