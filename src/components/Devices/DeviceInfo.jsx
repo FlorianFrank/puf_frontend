@@ -5,6 +5,7 @@ import nanosec_matrix from '../../assets/devices/nanosec_matrix.jpg';
 import microcontroller_raspberry_pi_3 from '../../assets/devices/microcontroller_raspberry_pi_3.png';
 import oscilloscope_keysight_3000a from '../../assets/devices/oscilloscope_keysight_3000a.png';
 import smu_keithley_2600b from '../../assets/devices/smu_keithley_2600b.png';
+import diglent_atlys from '../../assets/devices/fpga_digilent_atlys.png';
 
 
 import Typography from "@mui/material/Typography";
@@ -30,7 +31,7 @@ const DeviceStatus = ({state}) => {
     );
 };
 
-function selectDeviceFigure(deviceIdentifier) {
+function selectDeviceFigure(deviceIdentifier, type) {
     switch (deviceIdentifier) {
         case 'Keithley 2636B SMU':
             return smu_keithley_2600b;
@@ -42,12 +43,21 @@ function selectDeviceFigure(deviceIdentifier) {
             return microcontroller_raspberry_pi_3;
     }
 
+    if (type === 'fpga' || type === 'FPGA')
+        return diglent_atlys
+    if (type === 'SMU')
+        return smu_keithley_2600b
+
+    if (type === 'Microcontroller')
+        return microcontroller_raspberry_pi_3
+
     return nanosec_matrix
 }
 
 const DeviceInfo = () => {
         let location = useLocation();
         const title = location.state?.title || '';
+        const type = location.state?.type || '';
         const deviceDict = location.state?.deviceDict || [];
 
         return (
@@ -55,7 +65,7 @@ const DeviceInfo = () => {
                 <Header category="Dashboard" title='Device Info'/>
                 <div>
                     <div style={{float: 'left', paddingTop: '3.5%', paddingRight: '5%'}}>
-                        <img src={selectDeviceFigure(title)} style={{maxHeight: '600px', maxWidth: '400px'}} alt="logo"/>
+                        <img src={selectDeviceFigure(title, type)} style={{maxHeight: '600px', maxWidth: '400px'}} alt="logo"/>
                     </div>
                     <div style={{flex: '1', background: 'white'}}>
                         <table>
