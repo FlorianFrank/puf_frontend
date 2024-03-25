@@ -9,6 +9,7 @@ import {Alert} from '@mui/lab';
 import LoadingClip from '../../Utils/LoadingClip';
 import {triggerAddTestToast} from "../../Utils/ToastManager";
 import {makeStyles} from '@material-ui/core/styles';
+import {useLocation} from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +19,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const AddTest = ({testType, testTypeName}) => {
+const AddTest = () => {
+    let location = useLocation();
+
+    const testType = location.state?.testType || '';
+    const testTypeName = location.state?.testTypeName || '';
 
     const classes = useStyles();
 
@@ -29,7 +34,7 @@ const AddTest = ({testType, testTypeName}) => {
     const [alertMessage, setAlertMessage] = useState('')
     const [values, setValues] = useState({
         title: '',
-        testType: (testType === 'cnt_puf') ? 'transferChar' : (testType === 'memory') ? 'rowHammering' : ''
+        testType: ''
     })
     const [, setErrors] = useState({})
     const [testTypes, setTestTypes] = useState([])
@@ -52,9 +57,15 @@ const AddTest = ({testType, testTypeName}) => {
                 console.log('Fetch default test template values for test class ' + testClass)
                 fetch_get(FETCH_DEFAULT_VALUES + '?testClass=' + testClass + '&testSubclass=' + testType, (value) =>
                     setAlertIsSet(value), (value) => setAlertMessage(value)).then((retData) => {
+                    if (!retData || !retData['test_types'] || retData['test_types'].length == 0) {
+                        setAlertIsSet(true)
+                        setAlertMessage("FETCH_DEFAULT_VALUES returns empty data array")
+                        return;
+                    }
 
+                    if (testType === '')
+                        testType = retData['test_types'][0].field
                     const defaultValueList = {testType: testType}
-
                     retData['input_fields'][testType]['groups'].forEach((group) => {
                         group['fields'].forEach((field) => {
                             if (field['type'] === 'input')
