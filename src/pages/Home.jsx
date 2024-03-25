@@ -71,9 +71,8 @@ const Home = () => {
                         <Route path="/overview" element={<Overview/>}/>
                         <Route path="/devices" element={<Devices/>}/>
                         <Route path="/addTest" element={<TestCategorySelector/>}/>
-                        <Route path="/addMemoryTest" element={<AddTest testType={'memory'} testTypeName={'Memory'}/>}/>
+                        <Route path="/addTestTemplate" element={<AddTest/>}/>
                         <Route path="/addScriptTest" element={<ScriptExecution/>}/>
-                        <Route path="/addCNTTest" element={<AddTest testType={'cnt_puf'} testTypeName={'Carbon Nanotubes'}/>}/>
                         <Route path="/versionInfo" element={<VersionInfo/>}/>
                         <Route path="/uploadMeasurments" element={<Upload/>}/>
                         <Route path="/deviceInfo" element={<DeviceInfo/>}/>

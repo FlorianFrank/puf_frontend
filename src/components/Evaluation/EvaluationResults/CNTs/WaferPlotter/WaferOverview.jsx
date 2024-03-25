@@ -19,9 +19,9 @@ const WaferOverview = () => {
             startTime={startTime}
             stopTime={stopTime}
             resultTableHeader={['Wafer', 'Row', 'Column', 'PUF ID', 'Nr. Selected Cells', 'Nr. Conductive',
-                'Nr. Non-Conductive', 'Nr. Semi-Conductive', 'Hamming Weight']}
+                'Nr. Non-Conductive', 'Nr. Semi-Conductive', 'Nr. Faulty cells', 'Hamming Weight']}
             resultKeyList={['wafer', 'row', 'column', 'pufID', 'nrSelectedCells', 'nrConductiveCells',
-                'nrNonConductiveCells', 'nrSemiConductiveCells', 'hammingWeight']}
+                'nrNonConductiveCells', 'nrSemiConductiveCells', 'nrErrorCells', 'hammingWeight']}
             visualization_height={1200} visualization_width={1600}/>
     );
 };
